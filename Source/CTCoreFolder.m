@@ -85,6 +85,10 @@
 }
 
 - (NSSet *)messageObjectsFromIndex:(unsigned int)start toIndex:(unsigned int)end {
+    NSMutableSet *messages = [NSMutableSet set];
+	[self connect];
+	
+    if (myAccount.accountType == CT_CORE_ACCOUNT_IMAP) {
 	struct mailmessage_list * env_list;
 	int r;
 	struct mailimap_fetch_att * fetch_att;
@@ -92,7 +96,6 @@
 	struct mailimap_set * set;
 	clist * fetch_result;
 
-	[self connect];
 	set = mailimap_set_new_interval(start, end);
 	if (set == NULL) 
 		return nil;
@@ -151,7 +154,6 @@
 	CTCoreMessage *msgObject;
 	struct mailmessage *msg;
 	clistiter *fetchResultIter = clist_begin(fetch_result);
-	NSMutableSet *messages = [NSMutableSet set];
 	for(i=0; i<len; i++) {
 		msg = carray_get(env_list->msg_tab, i);
 		msgObject = [[CTCoreMessage alloc] initWithMessageStruct:msg];
@@ -169,6 +171,41 @@
 		free(env_list);
 	}
 	mailimap_fetch_list_free(fetch_result);	
+	
+	
+	} else if (myAccount.accountType == CT_CORE_ACCOUNT_POP3) {
+	    
+        CTCoreMessage* message;
+        struct mailmessage* msg;
+        int err;
+        size_t i;
+
+        // Get CTCoreMessage objects from the given message numbers
+        for (i = start; i <= end; ++i) {
+            err = mailfolder_get_message(myFolder, i, &msg);
+            if (err != MAIL_NO_ERROR) {
+                NSException *exception = [NSException exceptionWithName:CTUnknownError
+                                                      reason:[NSString stringWithFormat:@"Error number: %d", err]
+                                                      userInfo:nil];
+                [exception raise];
+            }
+
+            // Note that all we get are the fields, flags aren't supported by the libetpan POP3 driver
+            err = mailmessage_fetch_envelope(msg, &(msg->msg_fields));
+            if (err != MAIL_NO_ERROR) {
+                NSException *exception = [NSException exceptionWithName:CTUnknownError
+                                                      reason:[NSString stringWithFormat:@"Error number: %d", err]
+                                                      userInfo:nil];
+                [exception raise];
+            }
+
+            message = [[CTCoreMessage alloc] initWithMessageStruct:msg];
+            [message setSequenceNumber:i];
+            [messages addObject:message];
+            [message release];
+        }
+    }
+    
 	return messages;
 }
 
@@ -200,6 +237,8 @@
 	
 	//TODO Fix me, i'm missing alot of things that aren't being downloaded, 
 	// I just hacked this in here for the mean time
+	if (myAccount.accountType == CT_CORE_ACCOUNT_IMAP) {
+	// Only IMAP supports flags, not POP
 	err = mailmessage_get_flags(msgStruct, &(msgStruct->msg_flags));
 	if (err != MAIL_NO_ERROR) {
 		NSException *exception = [NSException
@@ -208,12 +247,28 @@
 			        userInfo:nil];
 		[exception raise];
 	}
+    }
+    
 	return [[[CTCoreMessage alloc] initWithMessageStruct:msgStruct] autorelease];
 }
 
 - (NSUInteger)totalMessageCount {
 	[self connect];			
-	return [self imapSession]->imap_selection_info->sel_exists;
+	
+	if (myAccount.accountType == CT_CORE_ACCOUNT_IMAP) {
+	    return [self imapSession]->imap_selection_info->sel_exists;
+    } else if (myAccount.accountType == CT_CORE_ACCOUNT_POP3) {
+        unsigned int messageCount = 0;
+        unsigned int junk;
+        int err;
+	
+        err =  mailfolder_status(myFolder, &messageCount, &junk, &junk);
+        IfTrue_RaiseException(err != MAILIMAP_NO_ERROR, CTUnknownError, 
+                              [NSString stringWithFormat:@"Error number: %d", err]);
+        return messageCount;
+    } else {
+        return 0;
+    }
 }
 
 

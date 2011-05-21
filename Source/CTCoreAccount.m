@@ -38,6 +38,9 @@
 
 
 @implementation CTCoreAccount
+
+@synthesize accountType;
+
 - (id)init {
 	self = [super init];
 	if (self) {
@@ -64,16 +67,21 @@
 //TODO, should I use the cache?
 - (void)connectToServer:(NSString *)server port:(int)port 
 		connectionType:(int)conType authType:(int)authType
+		accountType:(CTCoreAccountType)accType
 		login:(NSString *)login password:(NSString *)password {
 	int err = 0;
-	int imap_cached = 0;
-
+	int cached = 0;
 	const char* auth_type_to_pass = NULL;
-	if(authType == IMAP_AUTH_TYPE_SASL_CRAM_MD5) {
-		auth_type_to_pass = "CRAM-MD5";
-	}
+    accountType = accType;
+    
+
 	
-	err = imap_mailstorage_init_sasl(myStorage,
+	if (accType == CT_CORE_ACCOUNT_IMAP) {
+	    if(authType == IMAP_AUTH_TYPE_SASL_CRAM_MD5) {
+		    auth_type_to_pass = "CRAM-MD5";
+	    }
+	
+	    err = imap_mailstorage_init_sasl(myStorage,
 									 (char *)[server cStringUsingEncoding:NSUTF8StringEncoding],
 									 (uint16_t)port, NULL,
 									 conType,
@@ -82,8 +90,22 @@
 									 NULL, NULL,
 									 (char *)[login cStringUsingEncoding:NSUTF8StringEncoding], (char *)[login cStringUsingEncoding:NSUTF8StringEncoding],
 									 (char *)[password cStringUsingEncoding:NSUTF8StringEncoding], NULL,
-									 imap_cached, NULL);
-		
+									 cached, NULL);
+	} else if (accType == CT_CORE_ACCOUNT_POP3) {
+	    err = pop3_mailstorage_init_sasl(myStorage,
+                                         (char *)[server cStringUsingEncoding:NSUTF8StringEncoding],
+                                         (uint16_t)port, NULL, conType, auth_type_to_pass,
+                                         NULL, NULL, NULL,
+                                         (char *)[login cStringUsingEncoding:NSUTF8StringEncoding], (char *)[login cStringUsingEncoding:NSUTF8StringEncoding],
+                                         (char *)[password cStringUsingEncoding:NSUTF8StringEncoding], NULL,
+                                         cached, NULL, NULL);
+    } else {
+		NSException *exception = [NSException exceptionWithName:CTUnknownError
+                                              reason:[NSString stringWithFormat:@"Invalid account type: %d", accType]
+                                              userInfo:nil];
+		[exception raise];
+    }
+		    
 	if (err != MAIL_NO_ERROR) {
 		NSException *exception = [NSException
 		        exceptionWithName:CTMemoryError
@@ -124,6 +146,10 @@
 
 
 - (mailimap *)session {
+    if (accountType == CT_CORE_ACCOUNT_POP3) {
+        return nil;
+    }
+    
 	struct imap_cached_session_state_data * cached_data;
 	struct imap_session_state_data * data;
 	mailsession *session;
@@ -148,6 +174,10 @@
 
 
 - (NSSet *)subscribedFolders {
+    if (accountType == CT_CORE_ACCOUNT_POP3) {
+        return [self allFolders];
+    }
+    
 	struct mailimap_mailbox_list * mailboxStruct;
 	clist *subscribedList;
 	clistiter *cur;
@@ -185,6 +215,11 @@
 }
 
 - (NSSet *)allFolders {
+    if (accountType == CT_CORE_ACCOUNT_POP3) {
+        NSSet* result = [NSSet setWithObjects:@"INBOX", nil];
+        return result;
+    }
+    
 	struct mailimap_mailbox_list * mailboxStruct;
 	clist *allList;
 	clistiter *cur;

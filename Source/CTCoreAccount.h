@@ -42,9 +42,15 @@
 
 @class CTCoreFolder;
 
+typedef enum {
+    CT_CORE_ACCOUNT_IMAP,
+    CT_CORE_ACCOUNT_POP3
+} CTCoreAccountType;
+
 @interface CTCoreAccount : NSObject {	
 	struct mailstorage	*myStorage;
 	BOOL				connected;
+	CTCoreAccountType   accountType;
 }
 
 /*!
@@ -74,10 +80,12 @@
 	@param		connnectionType What kind of connection to use, it can be one of these three values:
 				CONNECTION_TYPE_PLAIN, CONNECTION_TYPE_STARTTLS, CONNECTION_TYPE_TRY_STARTTLS, CONNECTION_TYPE_TLS
 	@param		authType The authentication type, only IMAP_AUTH_TYPE_PLAIN is currently supported
+	@param		accountType One of the supported account types listed in CTCoreAccountType
 	@param		login The username to connect with.
 	@param		password The password to use to connect.
 */
 - (void)connectToServer:(NSString *)server port:(int)port connectionType:(int)conType authType:(int)authType 
+                        accountType:(CTCoreAccountType)accType
 						login:(NSString *)login password:(NSString *)password;
 						
 /*!
@@ -95,4 +103,7 @@
 /* Intended for advanced use only */
 - (mailimap *)session;
 - (struct mailstorage *)storageStruct;
+
+@property(nonatomic, assign) CTCoreAccountType accountType;
+
 @end
