@@ -1472,6 +1472,28 @@ int mailimap_login(mailimap * session,
   if (session->imap_state != MAILIMAP_STATE_NON_AUTHENTICATED)
     return MAILIMAP_ERROR_BAD_STATE;
 
+  // Yahoo special command to allow IMAP access                                                                                                                                                                                           
+  int useridLen = strlen(userid);                                                                                                                                                                                                         
+  int yahooLen = strlen("yahoo.com");                                                                                                                                                                                                     
+  if (useridLen > yahooLen &&                                                                                                                                                                                                             
+      strcmp("yahoo.com", userid + useridLen - yahooLen) == 0) {                                                                                                                                                                          
+      r = mailimap_send_current_tag(session);                                                                                                                                                                                             
+      if (r != MAILIMAP_NO_ERROR)                                                                                                                                                                                                         
+          return r;                                                                                                                                                                                                                       
+      r = mailimap_token_send(session->imap_stream, "ID (\"GUID\" \"1\")");                                                                                                                                                               
+      if (r != MAILIMAP_NO_ERROR)                                                                                                                                                                                                         
+          return r;                                                                                                                                                                                                                       
+      r = mailimap_crlf_send(session->imap_stream);                                                                                                                                                                                       
+      if (r != MAILIMAP_NO_ERROR)                                                                                                                                                                                                         
+          return r;                                                                                                                                                                                                                       
+      if (mailstream_flush(session->imap_stream) == -1)                                                                                                                                                                                   
+          return MAILIMAP_ERROR_STREAM;                                                                                                                                                                                                   
+      if (mailimap_read_line(session) == NULL)                                                                                                                                                                                            
+          return MAILIMAP_ERROR_STREAM;                                                                                                                                                                                                   
+      if (mailimap_read_line(session) == NULL)                                                                                                                                                                                            
+          return MAILIMAP_ERROR_STREAM;                                                                                                                                                                                                   
+  }
+
   mailstream_set_privacy(session->imap_stream, 0);
   r = mailimap_send_current_tag(session);
   if (r != MAILIMAP_NO_ERROR) {
