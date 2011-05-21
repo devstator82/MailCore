@@ -125,12 +125,10 @@
 }
 
 - (struct mailmime *)buildMIMEStruct {
-	struct mailmime_mechanism * encoding;
 	struct mailmime_fields *mime_fields;
 	struct mailmime *mime_sub;
 	struct mailmime_content *content;
 	int r;
-    struct mailmime_disposition * disposition;
 
 	if( mFilename )
     {

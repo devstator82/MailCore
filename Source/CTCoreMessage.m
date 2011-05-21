@@ -347,11 +347,11 @@ char * etpan_encode_mime_header(char * phrase)
     
     NSDate *date = [self senderDate];
     
-    return [date addTimeInterval:timezoneOffsetInSeconds * -1];
+    return [date dateByAddingTimeInterval:timezoneOffsetInSeconds * -1];
 }
 
 - (NSDate*)sentDateLocalTimeZone {
-    return [[self sentDateGMT] addTimeInterval:[[NSTimeZone localTimeZone] secondsFromGMT]];
+    return [[self sentDateGMT] dateByAddingTimeInterval:[[NSTimeZone localTimeZone] secondsFromGMT]];
 }
 
 - (BOOL)isUnread {
@@ -640,7 +640,7 @@ char * etpan_encode_mime_header(char * phrase)
 	const char *addressName;
 	const char *addressEmail;
 
-	while(address = [objEnum nextObject]) {
+	while((address = [objEnum nextObject])) {
 		addressName = [[address name] cStringUsingEncoding:NSUTF8StringEncoding];
 		addressEmail = [[address email] cStringUsingEncoding:NSUTF8StringEncoding];
 		err =  mailimf_mailbox_list_add_mb(imfList, strdup(addressName), strdup(addressEmail));
@@ -684,7 +684,7 @@ char * etpan_encode_mime_header(char * phrase)
 	const char *addressName;
 	const char *addressEmail;
 
-	while(address = [objEnum nextObject]) {
+	while((address = [objEnum nextObject])) {
 		addressName = [[address name] cStringUsingEncoding:NSUTF8StringEncoding];
 		addressEmail = [[address email] cStringUsingEncoding:NSUTF8StringEncoding];
 		err =  mailimf_address_list_add_mb(imfList, strdup(addressName), strdup(addressEmail));
