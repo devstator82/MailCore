@@ -532,7 +532,7 @@ char * etpan_encode_mime_header(char * phrase)
 
 
 	struct mail_flags *flagsStruct = myMessage->msg_flags;
-    uint64 flags = 0;
+    uint64_t flags = 0;
 	if (flagsStruct != NULL) {
         BOOL seen = (flagsStruct->fl_flags & CTFlagSeen) > 0;
 		flags |= seen << 0;
