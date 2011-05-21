@@ -102,7 +102,8 @@
 		int r;
 		r = mailmessage_fetch_section(mMessage, mMime, &fetchedData, &fetchedDataLen);
 		if (r != MAIL_NO_ERROR) {
-			mailmessage_fetch_result_free(mMessage, fetchedData);
+		    // This is already released if mailmessage_fetch_section fails - this double free would crash us on iOS 4
+			//mailmessage_fetch_result_free(mMessage, fetchedData);
 			RaiseException(CTMIMEParseError, CTMIMEParseErrorDesc);
 		}
 
