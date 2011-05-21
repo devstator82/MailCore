@@ -1,4 +1,4 @@
-libetpan/Binaries/
+libetpan/ios-static-libraries/
 build/
 project.xcworkspace/
 xcuserdata/
