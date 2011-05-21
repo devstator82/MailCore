@@ -1,1 +1,4 @@
-libetpan/binaries
+libetpan/Binaries/
+build/
+project.xcworkspace/
+xcuserdata/
