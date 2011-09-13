@@ -7,9 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		04147EB3141F47C600955A30 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04147EB0141F47C600955A30 /* libcrypto.a */; };
-		04147EB4141F47C600955A30 /* libsasl2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04147EB1141F47C600955A30 /* libsasl2.a */; };
-		04147EB5141F47C600955A30 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04147EB2141F47C600955A30 /* libssl.a */; };
+		04147EC8141F52DA00955A30 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C6F9EDBD105339EA0059C3BA /* libcrypto.dylib */; };
+		04147EC9141F52DC00955A30 /* libcurl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C6F9EDB1105339650059C3BA /* libcurl.dylib */; };
+		04147ECA141F52DE00955A30 /* libexpat.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C6F9EDAC1053395A0059C3BA /* libexpat.dylib */; };
+		04147ECB141F52E100955A30 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C6F9EDAA1053394C0059C3BA /* libiconv.dylib */; };
+		04147ECC141F52E500955A30 /* libsasl2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C6F9EDA5105339380059C3BA /* libsasl2.dylib */; };
+		04147ECD141F52E800955A30 /* libssl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C6F9ED9D105339200059C3BA /* libssl.dylib */; };
 		C6451AFE1083D316003135FD /* mailimf_write.h in Headers */ = {isa = PBXBuildFile; fileRef = C6F9EA32105335BC0059C3BA /* mailimf_write.h */; };
 		C6451AFF1083D316003135FD /* mhdriver_cached.h in Headers */ = {isa = PBXBuildFile; fileRef = C6F9E913105335BC0059C3BA /* mhdriver_cached.h */; };
 		C6451B001083D316003135FD /* mhdriver_types.h in Headers */ = {isa = PBXBuildFile; fileRef = C6F9E91A105335BC0059C3BA /* mhdriver_types.h */; };
@@ -852,17 +855,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		04147E96141F457F00955A30 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcrypto.a; path = "../../../lib/iPhoneOS-V7-4.3/lib/libcrypto.a"; sourceTree = "<group>"; };
-		04147E97141F457F00955A30 /* libcurl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcurl.a; path = "../../../lib/iPhoneOS-V7-4.3/lib/libcurl.a"; sourceTree = "<group>"; };
-		04147E98141F457F00955A30 /* libgcrypt.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libgcrypt.a; path = "../../../lib/iPhoneOS-V7-4.3/lib/libgcrypt.a"; sourceTree = "<group>"; };
-		04147E99141F457F00955A30 /* libgpg-error.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libgpg-error.a"; path = "../../../lib/iPhoneOS-V7-4.3/lib/libgpg-error.a"; sourceTree = "<group>"; };
-		04147E9A141F457F00955A30 /* libsasl2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsasl2.a; path = "../../../lib/iPhoneOS-V7-4.3/lib/libsasl2.a"; sourceTree = "<group>"; };
-		04147E9B141F457F00955A30 /* libssh2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssh2.a; path = "../../../lib/iPhoneOS-V7-4.3/lib/libssh2.a"; sourceTree = "<group>"; };
-		04147E9C141F457F00955A30 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssl.a; path = "../../../lib/iPhoneOS-V7-4.3/lib/libssl.a"; sourceTree = "<group>"; };
-		04147E9D141F457F00955A30 /* libz.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libz.a; path = "../../../lib/iPhoneOS-V7-4.3/lib/libz.a"; sourceTree = "<group>"; };
-		04147EB0141F47C600955A30 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcrypto.a; path = "../../../lib/iPhoneOS-V7-4.3/lib/libcrypto.a"; sourceTree = "<group>"; };
-		04147EB1141F47C600955A30 /* libsasl2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libsasl2.a; path = "../../../lib/iPhoneOS-V7-4.3/lib/libsasl2.a"; sourceTree = "<group>"; };
-		04147EB2141F47C600955A30 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssl.a; path = "../../../lib/iPhoneOS-V7-4.3/lib/libssl.a"; sourceTree = "<group>"; };
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8DC2EF5B0486A6940098B216 /* libetpan.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = libetpan.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6516B69130DD667004ADD56 /* namespace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = namespace.h; sourceTree = "<group>"; };
@@ -1393,9 +1385,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				04147EB3141F47C600955A30 /* libcrypto.a in Frameworks */,
-				04147EB4141F47C600955A30 /* libsasl2.a in Frameworks */,
-				04147EB5141F47C600955A30 /* libssl.a in Frameworks */,
+				04147EC8141F52DA00955A30 /* libcrypto.dylib in Frameworks */,
+				04147EC9141F52DC00955A30 /* libcurl.dylib in Frameworks */,
+				04147ECA141F52DE00955A30 /* libexpat.dylib in Frameworks */,
+				04147ECB141F52E100955A30 /* libiconv.dylib in Frameworks */,
+				04147ECC141F52E500955A30 /* libsasl2.dylib in Frameworks */,
+				04147ECD141F52E800955A30 /* libssl.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1415,9 +1410,6 @@
 		0867D691FE84028FC02AAC07 /* libetpan */ = {
 			isa = PBXGroup;
 			children = (
-				04147EB0141F47C600955A30 /* libcrypto.a */,
-				04147EB1141F47C600955A30 /* libsasl2.a */,
-				04147EB2141F47C600955A30 /* libssl.a */,
 				08FB77AEFE84172EC02AAC07 /* libetpan */,
 				32C88DFF0371C24200C91783 /* Other Sources */,
 				089C1665FE841158C02AAC07 /* Resources */,
@@ -1430,14 +1422,6 @@
 		0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				04147E96141F457F00955A30 /* libcrypto.a */,
-				04147E97141F457F00955A30 /* libcurl.a */,
-				04147E98141F457F00955A30 /* libgcrypt.a */,
-				04147E99141F457F00955A30 /* libgpg-error.a */,
-				04147E9A141F457F00955A30 /* libsasl2.a */,
-				04147E9B141F457F00955A30 /* libssh2.a */,
-				04147E9C141F457F00955A30 /* libssl.a */,
-				04147E9D141F457F00955A30 /* libz.a */,
 				C6F9ED9A105338F60059C3BA /* Libraries */,
 			);
 			name = "External Frameworks and Libraries";

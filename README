@@ -1,0 +1,29 @@
+How to get this thing linked to your iOS project. This might not be the best way around, but it works for me.
+
+- Add this repository as a git submodule
+- Download the precompiled iOS libraries for LibCrypto, OpenSSL, LibSasl and LibCurl from http://code.google.com/p/ios-static-libraries/
+- Save the downloaded files somewhere in your projects source-code repository
+
+My source tree now looks like this:
+
+/
+/ipad <- my $SRCROOT
+/lib <- contains files downloaded from http://code.google.com/p/ios-static-libraries/
+/MailCore <- this git repository added as a submodule
+
+- Add the MailCore project to your root iOS project
+- Additionally add the MailCore project as a dependency on your build target in the target dependencies area on the build phases tab. 
+- Also add libiconv.dylib and libmailcore.a in the "Link binaries with Libraries" section.
+- On the Build Settings tab find the "library search paths" settings and add the path to the location for the downloaded libraries. For example I added "$(SRCROOT)/../lib/iPhoneOS-V7-4.3/lib" (including quotes) to build for the iOS device
+- Select your project (not the target) and find the "other linker flags" settings
+- Add the following values -lcrypto -lssl -lsasl2 -lcurl
+
+- Select the libetpan project (expand the MailCore project to see it)
+- Select the static libetpan phone target
+- Make sure that the link binaries with assembly contains the following: libcrypto.dylib libcurl.dylib libexpat.dylib libiconv.dylib libsasl2.dylib libssl.dylib
+- If not you can find these libraries under the "libetpan.xoceproj/External Frameworks and Libraries" folder or under the system frameworks folder (which is the case with libiconv.dylib)
+- Go to the build settings tab and find the "header search paths" settings, add the value "$(SRCROOT)/../../../lib/iPhoneOS-V7-4.3/include" (inluding quotes), yours might need to look a bit different depending on the location where you saved the ios-static-libs)
+
+This should more or less get you going. It took me a while to figure out and hopefully I haven't left anything out of these steps :-)
+
+Note: you might need to fix the MailCore and LibEtpan architecture selections if you start getting compiler errors
