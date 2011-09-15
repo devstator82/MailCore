@@ -1,3 +1,11 @@
+This is a specialized version of MailCore to interact with Gmail and Gmail alone, so don't try to use this on other IMAP servers :-). It fixes stuff I need, if its helpful for you, all the better. Improvements:
+
+- Support for XOAUTH based login
+- Support for the XLIST command for determining localized folders name
+- Support for Gmail X-GM-THRID
+
+See http://code.google.com/apis/gmail/imap/ for docs on above features.
+
 How to get this thing linked to your iOS project. This might not be the best way around, but it works for me.
 
 - Add this repository as a git submodule

@@ -54,6 +54,17 @@
 	return self;
 }
 
+- (id)initWithPath:(NSString *)path inAccount:(CTCoreAccount *)account withType:(NSString*)folderType
+{
+    self = [self initWithPath:path inAccount:account];
+    
+    if (self)
+    {
+        myFolderType = folderType;
+    }
+    return self;
+}
+
 
 - (void)dealloc {	
 	if (connected)
@@ -269,6 +280,11 @@
     } else {
         return 0;
     }
+}
+
+- (NSString*)folderType
+{
+    return myFolderType;
 }
 
 

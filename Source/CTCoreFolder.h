@@ -45,6 +45,7 @@
 	struct mailfolder *myFolder;
 	CTCoreAccount *myAccount;
 	NSString *myPath;
+    NSString *myFolderType;
 	BOOL connected;
 }
 
@@ -54,6 +55,14 @@
 	@param		inAccount This parameter must be passed in so the folder can initiate it's connection.
 */
 - (id)initWithPath:(NSString *)path inAccount:(CTCoreAccount *)account;
+
+/*!
+    @abstract	This method is used to initialize a folder. This method or the 
+                method in CTCoreAccount folderWithPath can be used to setup a folder.
+    @param		inAccount This parameter must be passed in so the folder can initiate it's connection.
+    @param      withType The folder type as returned by the imap xlist command.
+ */
+- (id)initWithPath:(NSString *)path inAccount:(CTCoreAccount *)account withType:(NSString*)folderType;
 
 /*!
 	@abstract	This initiates the connection after the folder has been initalized.
@@ -88,6 +97,12 @@
 */
 - (NSUInteger)totalMessageCount;
 
+/*!
+ @abstract	Returns the type of the folder as indicated by the xlist command's response, returns nil if type is not available
+ @result	A NSString containing the folder-type, possible values are Inbox, AllMail, Important, Drafts, Starred, Trash, Spam, Sent
+            or nil if the type was not available.
+ */
+- (NSString*)folderType;
 
 /* Intended for advanced use only */
 - (struct mailfolder *)folderStruct;

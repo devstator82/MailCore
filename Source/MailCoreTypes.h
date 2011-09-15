@@ -53,27 +53,27 @@
 /* =========================== */
 
 #define CTMIMEParseError			@"MIMEParserError"
-#define CTMIMEParseErrorDesc		@"An error occured during MIME parsing."
+#define CTMIMEParseErrorDesc		@"An error has occured during MIME parsing."
 
 #define CTMIMEUnknownError			@"MIMEUnknownError"
-#define CTMIMEUnknownErrorDesc		@"I don't know how to parse this MIME structure."
+#define CTMIMEUnknownErrorDesc		@"An error has occured while parsing the MIME structure."
 
 #define CTMemoryError	   			@"MemoryError"
 #define CTMemoryErrorDesc  			@"Memory could not be allocated."
                            
 #define CTLoginError	   			@"LoginError"
-#define CTLoginErrorDesc   			@"Error logging into account."
+#define CTLoginErrorDesc   			@"An error has occured while trying to login to your account."
                            
 #define CTUnknownError	   			@"UnknownError"
 
 #define	CTMessageNotFound			@"MessageNotFound"
-#define	CTMessageNotFoundDesc		@"The message could not be found."
+#define	CTMessageNotFoundDesc		@"The requested message could not be found."
 
 #define	CTNoSubscribedFolders		@"NoSubcribedFolders"
-#define	CTNoSubscribedFoldersDesc	@"There are not any subscribed folders."
+#define	CTNoSubscribedFoldersDesc	@"No subscribed folders were found on the server."
 
 #define	CTNoFolders					@"NoFolders"
-#define	CTNoFoldersDesc				@"There are not any folders on the server."
+#define	CTNoFoldersDesc				@"No folders were found on the server."
 
 #define	CTFetchError				@"FetchError"
 #define	CTFetchErrorDesc			@"An error has occurred while fetching from the server."
@@ -91,16 +91,16 @@
 #define	CTSMTPTLSDesc				@"An error occured while attempting to setup a TLS connection with the server."
 
 #define	CTSMTPLogin					@"SMTPLogin"
-#define	CTSMTPLoginDesc				@"The password or username is invalid."
+#define	CTSMTPLoginDesc				@"The username or password is invalid."
 
 #define	CTSMTPFrom					@"SMTPFrom"
-#define	CTSMTPFromDesc				@"An error occured while sending the from address."
+#define	CTSMTPFromDesc				@"An error has occured occured while sending the from address."
 
 #define	CTSMTPRecipients			@"SMTPRecipients"
-#define	CTSMTPRecipientsDesc		@"An error occured while sending the recipient addresses."
+#define	CTSMTPRecipientsDesc		@"An error has occured occured while sending the recipient addresses."
 
 #define	CTSMTPData					@"SMTPData"
-#define	CTSMTPDataDesc				@"An error occured while sending message data."
+#define	CTSMTPDataDesc				@"An error has occured occured while sending message data."
 
 typedef enum 
 {

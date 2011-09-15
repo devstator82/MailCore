@@ -221,8 +221,12 @@
     }
     
 	struct mailimap_mailbox_list * mailboxStruct;
+    struct mailimap_mbx_list_flags * mailboxFlagsStruct;
+    struct mailimap_mbx_list_oflag * mailboxFlagStruct;
+    
 	clist *allList;
 	clistiter *cur;
+    clistiter *cur2;
 	
 	NSString *mailboxNameObject;
 	char *mailboxName;
@@ -232,7 +236,7 @@
 
 	//Now, fill the all folders array
 	//TODO Fix this so it doesn't use *
-	err = mailimap_list([self session], "", "*", &allList);		
+	err = mailimap_xlist([self session], "", "*", &allList);		
 	if (err != MAIL_NO_ERROR)
 	{
 		NSException *exception = [NSException
@@ -253,8 +257,33 @@
 	{
 		mailboxStruct = cur->data;
 		mailboxName = mailboxStruct->mb_name;
+        mailboxFlagsStruct = mailboxStruct->mb_flag;
+        
+        NSString* flagName = nil;
+        
+        if (!clist_isempty(mailboxFlagsStruct->mbf_oflags))
+        {
+           for(cur2 = clist_begin(mailboxFlagsStruct->mbf_oflags); cur2 != NULL; cur2 = cur2->next) 
+           {
+               mailboxFlagStruct = cur2->data;
+               flagName = [NSString stringWithCString:mailboxFlagStruct->of_flag_ext encoding:NSUTF8StringEncoding];
+               
+               if ([flagName isEqualToString:@"HasNoChildren"] || [flagName isEqualToString:@"HasChildren"])
+               {
+                   flagName = nil;
+               }
+           }
+        }
+        
 		mailboxNameObject = [NSString stringWithCString:mailboxName encoding:NSUTF8StringEncoding];
-		[allFolders addObject:mailboxNameObject];
+
+        // Folders marked with /NoSelect have mbf_type 0, so ignore those (for ex. the root [GMail] virtual folder)
+        if (mailboxFlagsStruct->mbf_type != 0)
+        {
+            CTCoreFolder* folder = [[CTCoreFolder alloc] initWithPath:mailboxNameObject inAccount:self withType:flagName];
+            
+            [allFolders addObject:folder];
+        }
 	}
 	mailimap_list_result_free(allList);
 	return allFolders;
