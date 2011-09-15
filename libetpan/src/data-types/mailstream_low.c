@@ -203,10 +203,8 @@ ssize_t mailstream_low_read(mailstream_low * s, void * buf, size_t count)
   
 #ifdef STREAM_DEBUG
   if (r > 0) {
-    STREAM_LOG(s, 0, "<<<<<<< read <<<<<<\n");
     STREAM_LOG_BUF(s, 0, buf, r);
     STREAM_LOG(s, 0, "\n");
-    STREAM_LOG(s, 0, "<<<<<<< end read <<<<<<\n");
   }
 #endif
   
@@ -220,7 +218,6 @@ ssize_t mailstream_low_write(mailstream_low * s,
     return -1;
 
 #ifdef STREAM_DEBUG
-  STREAM_LOG(s, 1, ">>>>>>> send >>>>>>\n");
   if (s->privacy) {
     STREAM_LOG_BUF(s, 1, buf, count);
   }
@@ -228,7 +225,6 @@ ssize_t mailstream_low_write(mailstream_low * s,
     STREAM_LOG_BUF(s, 2, buf, count);
   }
   STREAM_LOG(s, 1, "\n");
-  STREAM_LOG(s, 1, ">>>>>>> end send >>>>>>\n");
 #endif
 
   return s->driver->mailstream_write(s, buf, count);
