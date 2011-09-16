@@ -1193,6 +1193,9 @@ static int mailimap_fetch_att_send(mailstream * fd,
   case MAILIMAP_FETCH_ATT_UID:
     return mailimap_token_send(fd, "UID");
 
+  case MAILIMAP_FETCH_ATT_GM_THRID:
+      return mailimap_token_send(fd, "X-GM-THRID");
+
   case MAILIMAP_FETCH_ATT_BODY_SECTION:
 
     r = mailimap_token_send(fd, "BODY");

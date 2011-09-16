@@ -2657,7 +2657,8 @@ enum {
   MAILIMAP_FETCH_ATT_BODY,              /* to fetch the MIME structure */
   MAILIMAP_FETCH_ATT_BODYSTRUCTURE,     /* to fetch the MIME structure with
                                            additional information */
-  MAILIMAP_FETCH_ATT_UID,               /* to fetch the unique identifier */
+  MAILIMAP_FETCH_ATT_UID,               /* to fetch the unique identifier */  
+  MAILIMAP_FETCH_ATT_GM_THRID,          /* to fetch the gmail thread-id */
   MAILIMAP_FETCH_ATT_BODY_SECTION,      /* to fetch a given part */
   MAILIMAP_FETCH_ATT_BODY_PEEK_SECTION  /* to fetch a given part without
                                            marking the message as read */

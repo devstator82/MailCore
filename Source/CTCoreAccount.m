@@ -275,7 +275,8 @@
            }
         }
         
-		mailboxNameObject = [NSString stringWithCString:mailboxName encoding:NSUTF8StringEncoding];
+        // GMail doesn't allow selecting the localized inbox folder
+		mailboxNameObject = [flagName isEqualToString:@"Inbox"] ? @"INBOX" : [NSString stringWithCString:mailboxName encoding:NSUTF8StringEncoding];
 
         // Folders marked with /NoSelect have mbf_type 0, so ignore those (for ex. the root [GMail] virtual folder)
         if (mailboxFlagsStruct->mbf_type != 0)

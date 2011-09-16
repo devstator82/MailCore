@@ -114,7 +114,47 @@ char * etpan_encode_mime_header(char * phrase)
 	[super dealloc];
 }
 
+- (NSString*)fetchHeaders {
+    int err;
+    char * header;
+    NSString * nsresult;
+    size_t length;
+    err = mailmessage_fetch_header(myMessage, &header, &length);
+    
+    if (err == 0) {
+        nsresult = [[NSString alloc] initWithCString:header encoding:NSUTF8StringEncoding];
+    } else {
+		NSException *exception = [NSException
+                                  exceptionWithName:CTUnknownError
+                                  reason:[NSString stringWithFormat:@"Error number: %d", err]
+                                  userInfo:nil];
+		[exception raise];
+    }
 
+    mailmessage_fetch_result_free(myMessage, header);
+    return [nsresult autorelease];
+}
+
+- (NSString*)fetchGMailHeaders {
+    int err;
+    char * header;
+    NSString * nsresult;
+    size_t length;
+    err = mailmessage_fetch_header(myMessage, &header, &length);
+    
+    if (err == 0) {
+        nsresult = [[NSString alloc] initWithCString:header encoding:NSUTF8StringEncoding];
+    } else {
+		NSException *exception = [NSException
+                                  exceptionWithName:CTUnknownError
+                                  reason:[NSString stringWithFormat:@"Error number: %d", err]
+                                  userInfo:nil];
+		[exception raise];
+    }
+    
+    mailmessage_fetch_result_free(myMessage, header);
+    return [nsresult autorelease];
+}
 
 - (int)fetchBody {
 	int err;

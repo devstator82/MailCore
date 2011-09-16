@@ -82,6 +82,21 @@
 */
 - (id)init;
 
+
+/*!
+    @abstract   This method fetches the message headers off of the server. 
+                This method requires that an active MailCore network connection 
+                is present.
+ */
+- (NSString*)fetchHeaders;
+
+/*!
+    @abstract   This method fetches the GMail specific message headers off of the server. 
+                This method requires that an active MailCore network connection 
+                is present.
+ */
+- (NSString*)fetchGMailHeaders;
+
 /*!
 	@abstract	This method fetches the message body off of the server, and places
 				it in a local data structure which can later be returned by the

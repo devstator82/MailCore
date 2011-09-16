@@ -1867,7 +1867,8 @@ int imap_add_envelope_fetch_att(struct mailimap_fetch_type * fetch_type)
   struct mailimap_fetch_att * fetch_att;
   int res;
   int r;
-  char * header;
+  char * header; 
+  char * header2;
   clist * hdrlist;
   struct mailimap_header_list * imap_hdrlist;
   struct mailimap_section * section;
@@ -1885,8 +1886,15 @@ int imap_add_envelope_fetch_att(struct mailimap_fetch_type * fetch_type)
     goto err;
   }
 
-  header = strdup("References");
+  header = strdup("Message-ID");
   if (header == NULL) {
+    mailimap_fetch_att_free(fetch_att);
+    res = MAIL_ERROR_MEMORY;
+    goto err;
+  }
+    
+  header2 = strdup("References");
+  if (header2 == NULL) {
     mailimap_fetch_att_free(fetch_att);
     res = MAIL_ERROR_MEMORY;
     goto err;
@@ -1895,6 +1903,7 @@ int imap_add_envelope_fetch_att(struct mailimap_fetch_type * fetch_type)
   hdrlist = clist_new();
   if (hdrlist == NULL) {
     free(header);
+    free(header2);
     mailimap_fetch_att_free(fetch_att);
     res = MAIL_ERROR_MEMORY;
     goto err;
@@ -1910,6 +1919,16 @@ int imap_add_envelope_fetch_att(struct mailimap_fetch_type * fetch_type)
     goto err;
   }
   
+  r = clist_append(hdrlist, header2);
+  if (r < 0) {
+    free(header2);
+    clist_foreach(hdrlist, (clist_func) free, NULL);
+    clist_free(hdrlist);
+    mailimap_fetch_att_free(fetch_att);
+    res = MAIL_ERROR_MEMORY;
+    goto err;
+  }
+    
   imap_hdrlist = mailimap_header_list_new(hdrlist);
   if (imap_hdrlist == NULL) {
     clist_foreach(hdrlist, (clist_func) free, NULL);

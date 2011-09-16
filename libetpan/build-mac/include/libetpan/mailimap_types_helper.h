@@ -287,6 +287,14 @@ mailimap_fetch_att_new_uid(void);
 
 /*
   this function creates a mailimap_fetch_att structure to request
+  the gmail specific thread-id of a message
+*/
+
+struct mailimap_fetch_att *
+mailimap_fetch_att_new_gmail_thread_id(void);
+    
+/*
+  this function creates a mailimap_fetch_att structure to request
   a given section of a message
 */
 

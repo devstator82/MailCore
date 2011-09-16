@@ -555,6 +555,12 @@ mailimap_fetch_att_new_uid(void)
 }
 
 struct mailimap_fetch_att *
+mailimap_fetch_att_new_gmail_thread_id(void)
+{
+    return mailimap_fetch_att_new(MAILIMAP_FETCH_ATT_GM_THRID, NULL, 0, 0);
+}
+
+struct mailimap_fetch_att *
 mailimap_fetch_att_new_body_section(struct mailimap_section * section)
 {
   return mailimap_fetch_att_new(MAILIMAP_FETCH_ATT_BODY_SECTION, section, 0, 0);
@@ -581,8 +587,6 @@ mailimap_fetch_att_new_body_peek_section_partial(struct mailimap_section * secti
   return mailimap_fetch_att_new(MAILIMAP_FETCH_ATT_BODY_PEEK_SECTION, section,
 				offset, size);
 }
-
-
 
 struct mailimap_fetch_type *
 mailimap_fetch_type_new_all(void)
