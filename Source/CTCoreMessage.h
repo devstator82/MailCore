@@ -95,14 +95,7 @@
                 This method requires that an active MailCore network connection 
                 is present.
  */
-- (NSString*)fetchGMailHeaders;
 
-/*!
-	@abstract	This method fetches the message body off of the server, and places
-				it in a local data structure which can later be returned by the
-				method body. This method require that an active MailCore network
-				connection is present.
-*/
 - (int)fetchBody;
 
 /*!
@@ -176,6 +169,16 @@
 	@abstract	Returns an NSString containing the messages UID.
 */
 - (NSString *)uid;
+
+/*!
+    @abstract	Returns an NSString containing the gmail specific message id.
+ */
+- (NSString *)gmail_id;
+
+/*!
+    @abstract	Returns an NSString containing the gmail specific thread id.
+ */
+- (NSString *)gmail_thread_id;
 
 /*!
 	@abstract	Returns the message sequence number, this number cannot be used across sessions

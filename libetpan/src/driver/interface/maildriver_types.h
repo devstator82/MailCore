@@ -718,6 +718,8 @@ struct mailmessage {
   mailmessage_driver * msg_driver;
   uint32_t msg_index;
   char * msg_uid;
+  char * gm_msgid;
+  char * gm_thrid;
 
   size_t msg_size;
   struct mailimf_fields * msg_fields;

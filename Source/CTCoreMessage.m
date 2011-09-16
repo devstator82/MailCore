@@ -135,27 +135,6 @@ char * etpan_encode_mime_header(char * phrase)
     return [nsresult autorelease];
 }
 
-- (NSString*)fetchGMailHeaders {
-    int err;
-    char * header;
-    NSString * nsresult;
-    size_t length;
-    err = mailmessage_fetch_header(myMessage, &header, &length);
-    
-    if (err == 0) {
-        nsresult = [[NSString alloc] initWithCString:header encoding:NSUTF8StringEncoding];
-    } else {
-		NSException *exception = [NSException
-                                  exceptionWithName:CTUnknownError
-                                  reason:[NSString stringWithFormat:@"Error number: %d", err]
-                                  userInfo:nil];
-		[exception raise];
-    }
-    
-    mailmessage_fetch_result_free(myMessage, header);
-    return [nsresult autorelease];
-}
-
 - (int)fetchBody {
 	int err;
 	struct mailmime *dummyMime;
@@ -423,6 +402,14 @@ char * etpan_encode_mime_header(char * phrase)
 
 - (NSString *)uid {
 	return [NSString stringWithCString:myMessage->msg_uid encoding:NSUTF8StringEncoding];
+}
+
+- (NSString *)gmail_id {
+    return [NSString stringWithCString:myMessage->gm_msgid encoding:NSUTF8StringEncoding];
+}
+
+- (NSString *)gmail_thread_id {
+    return [NSString stringWithCString:myMessage->gm_thrid encoding:NSUTF8StringEncoding];
 }
 
 - (NSUInteger)messageSize {

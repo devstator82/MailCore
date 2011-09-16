@@ -7685,6 +7685,99 @@ mailimap_msg_att_uid_parse(mailstream * fd, MMAPString * buffer,
 }
 
 /*
+ "X-GM-MSGID" SP uniqueid
+ */
+
+static int
+mailimap_msg_att_gmail_messages_id_parse(mailstream * fd, MMAPString * buffer,
+                                       size_t * indx,
+                                       char ** result,
+                                       size_t progr_rate,
+                                       progress_function * progr_fun)
+{
+    size_t cur_token;
+    uint32_t number;
+    char * nstring;
+    int type;
+    int r;
+    
+    cur_token = * indx;
+    
+    nstring = NULL;
+    number = 0;
+    
+    cur_token = * indx;
+    
+    r = mailimap_token_case_insensitive_parse(fd, buffer, &cur_token, "X-GM-MSGID");
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    r = mailimap_space_parse(fd, buffer, &cur_token);
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    type = MAILIMAP_BODY_EXTENSION_ERROR; /* XXX - removes a gcc warning */
+    
+    r = mailimap_astring_parse(fd, buffer, &cur_token, &nstring,
+                               progr_rate, progr_fun);
+    
+    //r = mailimap_uniqueid_parse(fd, buffer, &cur_token, &uid);
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    * indx = cur_token;
+    * result = nstring;
+    
+    return MAILIMAP_NO_ERROR;
+}
+
+/*
+ "X-GM-THRID" SP uniqueid
+ */
+
+static int
+mailimap_msg_att_gmail_thread_id_parse(mailstream * fd, MMAPString * buffer,
+                                   size_t * indx,
+                                   char ** result,
+                                    size_t progr_rate,
+                                    progress_function * progr_fun)
+{
+    size_t cur_token;
+    uint32_t number;
+    char * nstring;
+    int type;
+    int r;
+    
+    cur_token = * indx;
+    
+    nstring = NULL;
+    number = 0;
+    
+    cur_token = * indx;
+    
+    r = mailimap_token_case_insensitive_parse(fd, buffer, &cur_token, "X-GM-THRID");
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    r = mailimap_space_parse(fd, buffer, &cur_token);
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    type = MAILIMAP_BODY_EXTENSION_ERROR; /* XXX - removes a gcc warning */
+    
+    r = mailimap_astring_parse(fd, buffer, &cur_token, &nstring,
+                               progr_rate, progr_fun);
+    
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    * indx = cur_token;
+    * result = nstring;
+    
+    return MAILIMAP_NO_ERROR;
+}
+
+/*
    msg-att-static  = "ENVELOPE" SP envelope / "INTERNALDATE" SP date-time /
                      "RFC822" [".HEADER" / ".TEXT"] SP nstring /
                      "RFC822.SIZE" SP number / "BODY" ["STRUCTURE"] SP body /
@@ -7714,6 +7807,8 @@ mailimap_msg_att_static_parse_progress(mailstream * fd, MMAPString * buffer,
   struct mailimap_body * body;
   struct mailimap_msg_att_body_section * body_section;
   uint32_t uid;
+  char * gm_msgid;
+  char * gm_thrid;
   struct mailimap_msg_att_static * msg_att_static;
   int type;
   int r;
@@ -7733,6 +7828,8 @@ mailimap_msg_att_static_parse_progress(mailstream * fd, MMAPString * buffer,
   body = NULL;
   body_section = NULL;
   uid = 0;
+  gm_msgid = NULL;
+  gm_thrid = NULL;
 
   type = MAILIMAP_MSG_ATT_ERROR; /* XXX - removes a gcc warning */
 
@@ -7811,6 +7908,18 @@ mailimap_msg_att_static_parse_progress(mailstream * fd, MMAPString * buffer,
     if (r == MAILIMAP_NO_ERROR)
       type = MAILIMAP_MSG_ATT_UID;
   }
+    
+  if (r == MAILIMAP_ERROR_PARSE) {
+      r = mailimap_msg_att_gmail_messages_id_parse(fd, buffer, &cur_token, &gm_msgid, progr_rate, progr_fun);
+    if (r == MAILIMAP_NO_ERROR)
+        type = MAILIMAP_MSG_ATT_GM_MSGID;
+  }
+    
+  if (r == MAILIMAP_ERROR_PARSE) {
+    r = mailimap_msg_att_gmail_thread_id_parse(fd, buffer, &cur_token, &gm_thrid, progr_rate, progr_fun);
+    if (r == MAILIMAP_NO_ERROR)
+        type = MAILIMAP_MSG_ATT_GM_THRID;
+  }
 
   if (r != MAILIMAP_NO_ERROR) {
     res = r;
@@ -7821,7 +7930,8 @@ mailimap_msg_att_static_parse_progress(mailstream * fd, MMAPString * buffer,
 					       rfc822, rfc822_header,
 					       rfc822_text, length,
 					       rfc822_size, bodystructure,
-					       body, body_section, uid);
+					       body, body_section, uid,
+                           gm_msgid, gm_thrid);
   if (msg_att_static == NULL) {
     res = MAILIMAP_ERROR_MEMORY;
     goto free;

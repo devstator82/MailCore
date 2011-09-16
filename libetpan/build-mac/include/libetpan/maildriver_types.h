@@ -697,6 +697,10 @@ struct mailmessage_driver {
       a suggestion is "AAAA-IIII" where AAAA is some
       random session number and IIII the content of index field.
 
+  - gm_msgid, whet it is not NULL, it contains the gmail specific unique id
+ 
+  - gm_thrid, whet it is not NULL, it contains the gmail specific thread id
+ 
   - size, when it is not 0, is the size of the message content.
   
   - fields, when it is not NULL, are the header fields of the message.
@@ -718,7 +722,9 @@ struct mailmessage {
   mailmessage_driver * msg_driver;
   uint32_t msg_index;
   char * msg_uid;
-
+  char * gm_msgid;
+  char * gm_thrid;
+    
   size_t msg_size;
   struct mailimf_fields * msg_fields;
   struct mail_flags * msg_flags;

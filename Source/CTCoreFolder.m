@@ -131,7 +131,33 @@
 		mailimap_fetch_type_free(fetch_type);
 		return nil;
 	}
-
+    
+    fetch_att = mailimap_fetch_att_new_gmail_message_id();
+    if (fetch_att == NULL) {
+        mailimap_fetch_type_free(fetch_type);
+        return nil;
+    }
+    
+    r = mailimap_fetch_type_new_fetch_att_list_add(fetch_type, fetch_att);
+    if (r != MAILIMAP_NO_ERROR) {
+        mailimap_fetch_att_free(fetch_att);
+        mailimap_fetch_type_free(fetch_type);
+        return nil;
+    }
+        
+    fetch_att = mailimap_fetch_att_new_gmail_thread_id();
+    if (fetch_att == NULL) {
+        mailimap_fetch_type_free(fetch_type);
+        return nil;
+    }
+    
+    r = mailimap_fetch_type_new_fetch_att_list_add(fetch_type, fetch_att);
+    if (r != MAILIMAP_NO_ERROR) {
+        mailimap_fetch_att_free(fetch_att);
+        mailimap_fetch_type_free(fetch_type);
+        return nil;
+    }
+        
 	r = mailimap_fetch([self imapSession], set, fetch_type, &fetch_result);
 	if (r != MAIL_NO_ERROR) {
 		NSException *exception = [NSException
@@ -308,8 +334,10 @@
 	return data->imap_session;	
 }
 
-/* From Libetpan source */
-//TODO Can these things be made public in libetpan?
+/* 
+ From Libetpan source
+ Waseem: updated to add gmail specific stuff
+ */
 int uid_list_to_env_list(clist * fetch_result, struct mailmessage_list ** result, 
 						mailsession * session, mailmessage_driver * driver) {
 	clistiter * cur;
@@ -331,6 +359,8 @@ int uid_list_to_env_list(clist * fetch_result, struct mailmessage_list ** result
 		clistiter * item_cur;
 		uint32_t uid;
 		size_t size;
+        char * gm_msgid;
+        char * gm_thrid;
 
 		msg_att = clist_content(cur);
 		uid = 0;
@@ -344,11 +374,19 @@ int uid_list_to_env_list(clist * fetch_result, struct mailmessage_list ** result
 				switch (item->att_data.att_static->att_type) {
 					case MAILIMAP_MSG_ATT_UID:
 						uid = item->att_data.att_static->att_data.att_uid;
-					break;
+                        break;
 
 					case MAILIMAP_MSG_ATT_RFC822_SIZE:
 						size = item->att_data.att_static->att_data.att_rfc822_size;
-					break;
+                        break;
+                    
+                    case MAILIMAP_MSG_ATT_GM_MSGID:
+                        gm_msgid = item->att_data.att_static->att_data.att_gm_msgid;
+                        break;
+                        
+                    case MAILIMAP_MSG_ATT_GM_THRID:
+                        gm_thrid = item->att_data.att_static->att_data.att_gm_thrid;
+                        break;
 				}
 				break;
 			}
@@ -365,6 +403,9 @@ int uid_list_to_env_list(clist * fetch_result, struct mailmessage_list ** result
 			res = r;
 			goto free_msg;
 		}
+        
+        msg->gm_msgid = gm_msgid;
+        msg->gm_thrid = gm_thrid;
 
 		r = carray_add(tab, msg, NULL);
 		if (r < 0) {

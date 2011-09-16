@@ -1192,7 +1192,10 @@ static int mailimap_fetch_att_send(mailstream * fd,
 
   case MAILIMAP_FETCH_ATT_UID:
     return mailimap_token_send(fd, "UID");
-
+          
+  case MAILIMAP_FETCH_ATT_GM_MSGID:
+      return mailimap_token_send(fd, "X-GM-MSGID");
+          
   case MAILIMAP_FETCH_ATT_GM_THRID:
       return mailimap_token_send(fd, "X-GM-THRID");
 

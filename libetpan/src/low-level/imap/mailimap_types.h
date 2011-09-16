@@ -1950,7 +1950,9 @@ enum {
   MAILIMAP_MSG_ATT_BODYSTRUCTURE, /* this is the MIME description of the
                                      message with additional information */
   MAILIMAP_MSG_ATT_BODY_SECTION,  /* this is a MIME part content */
-  MAILIMAP_MSG_ATT_UID            /* this is the message unique identifier */
+  MAILIMAP_MSG_ATT_UID,           /* this is the message unique identifier */
+  MAILIMAP_MSG_ATT_GM_MSGID,      /* this is the gmail specific message unique identifier */
+  MAILIMAP_MSG_ATT_GM_THRID       /* this is the gmail specific thread identifier */
 };
 
 /*
@@ -1988,6 +1990,10 @@ enum {
   - body_section is a MIME part content
 
   - uid is a unique message identifier
+ 
+  - gm_msgid is the gmail specific unique message identifier
+ 
+  - gm_thrid is the gmail specific thread identifer
 */
 
 struct mailimap_msg_att_static {
@@ -2012,6 +2018,8 @@ struct mailimap_msg_att_static {
     struct mailimap_body * att_body;          /* can be NULL */
     struct mailimap_msg_att_body_section * att_body_section; /* can be NULL */
     uint32_t att_uid;
+    char * att_gm_msgid;
+    char * att_gm_thrid;
   } att_data;
 };
 
@@ -2026,7 +2034,9 @@ mailimap_msg_att_static_new(int att_type, struct mailimap_envelope * att_env,
     struct mailimap_body * att_bodystructure,
     struct mailimap_body * att_body,
     struct mailimap_msg_att_body_section * att_body_section,
-    uint32_t att_uid);
+    uint32_t att_uid,
+    char * att_gm_msgid,
+    char * att_gm_thrid);
 
 void
 mailimap_msg_att_static_free(struct mailimap_msg_att_static * item);
@@ -2658,6 +2668,7 @@ enum {
   MAILIMAP_FETCH_ATT_BODYSTRUCTURE,     /* to fetch the MIME structure with
                                            additional information */
   MAILIMAP_FETCH_ATT_UID,               /* to fetch the unique identifier */
+  MAILIMAP_FETCH_ATT_GM_MSGID,          /* to fetch the gmail unique message-id */
   MAILIMAP_FETCH_ATT_GM_THRID,          /* to fetch the gmail thread-id */
   MAILIMAP_FETCH_ATT_BODY_SECTION,      /* to fetch a given part */
   MAILIMAP_FETCH_ATT_BODY_PEEK_SECTION  /* to fetch a given part without

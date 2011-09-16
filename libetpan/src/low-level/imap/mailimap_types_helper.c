@@ -555,6 +555,12 @@ mailimap_fetch_att_new_uid(void)
 }
 
 struct mailimap_fetch_att *
+mailimap_fetch_att_new_gmail_message_id(void)
+{
+    return mailimap_fetch_att_new(MAILIMAP_FETCH_ATT_GM_MSGID, NULL, 0, 0);
+}
+
+struct mailimap_fetch_att *
 mailimap_fetch_att_new_gmail_thread_id(void)
 {
     return mailimap_fetch_att_new(MAILIMAP_FETCH_ATT_GM_THRID, NULL, 0, 0);
