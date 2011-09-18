@@ -98,6 +98,12 @@
 - (NSUInteger)totalMessageCount;
 
 /*!
+ @abstract	Returns the path for the folder
+ @result	A NSString containing the folder-path
+ */
+- (NSString*)path;
+
+/*!
  @abstract	Returns the type of the folder as indicated by the xlist command's response, returns nil if type is not available
  @result	A NSString containing the folder-type, possible values are Inbox, AllMail, Important, Drafts, Starred, Trash, Spam, Sent
             or nil if the type was not available.

@@ -194,6 +194,7 @@
 	for(i=0; i<len; i++) {
 		msg = carray_get(env_list->msg_tab, i);
 		msgObject = [[CTCoreMessage alloc] initWithMessageStruct:msg];
+        msgObject.folder = self;
 		struct mailimap_msg_att *msg_att = (struct mailimap_msg_att *)clist_content(fetchResultIter);
 		if(msg_att != nil) {
 			[msgObject setSequenceNumber:msg_att->att_number];
@@ -237,6 +238,7 @@
             }
 
             message = [[CTCoreMessage alloc] initWithMessageStruct:msg];
+            message.folder = self;
             [message setSequenceNumber:i];
             [messages addObject:message];
             [message release];
@@ -286,7 +288,10 @@
 	}
     }
     
-	return [[[CTCoreMessage alloc] initWithMessageStruct:msgStruct] autorelease];
+	CTCoreMessage* message = [[[CTCoreMessage alloc] initWithMessageStruct:msgStruct] autorelease];
+    message.folder = self;    
+    
+    return message;    
 }
 
 - (NSUInteger)totalMessageCount {
@@ -306,6 +311,11 @@
     } else {
         return 0;
     }
+}
+
+- (NSString*)path
+{
+    return myPath;
 }
 
 - (NSString*)folderType

@@ -48,8 +48,10 @@
 	struct mailimf_single_fields *myFields;
 	CTMIME *myParsedMIME;
 	NSUInteger mySequenceNumber;
+    CTCoreFolder* folder;
 }
 @property(retain) CTMIME *mime;
+@property(nonatomic, retain) CTCoreFolder* folder;
 
 //TODO Parse this stuff: message_id, inReplyTo, references, comments, keywords, headers
 
@@ -150,9 +152,14 @@
 - (NSDate *)sentDateLocalTimeZone; 
 
 /*!
- @abstract	Returns YES if the message is unread.
+ @abstract	Returns YES if the message is read.
  */
-- (BOOL)isUnread;
+- (BOOL)isRead;
+
+/*!
+ @abstract	Returns YES if the message is starred (flagged in IMAP terms).
+ */
+- (BOOL)isStarred;
 
 /*!
  @abstract	Returns YES if the message is recent and unread.

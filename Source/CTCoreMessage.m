@@ -63,7 +63,7 @@ char * etpan_encode_mime_header(char * phrase)
 */
 
 @implementation CTCoreMessage
-@synthesize mime=myParsedMIME;
+@synthesize mime=myParsedMIME, folder;
 
 - (id)init {
 	[super init];
@@ -111,6 +111,7 @@ char * etpan_encode_mime_header(char * phrase)
 		mailimf_single_fields_free(myFields);
 	}
 	[myParsedMIME release];
+    [folder release];
 	[super dealloc];
 }
 
@@ -373,11 +374,20 @@ char * etpan_encode_mime_header(char * phrase)
     return [[self sentDateGMT] dateByAddingTimeInterval:[[NSTimeZone localTimeZone] secondsFromGMT]];
 }
 
-- (BOOL)isUnread {
+- (BOOL)isRead {
 	struct mail_flags *flags = myMessage->msg_flags;
 	if (flags != NULL) {
 		BOOL flag_seen = (flags->fl_flags & MAIL_FLAG_SEEN);
-		return !flag_seen;
+		return flag_seen;
+	}
+	return NO;
+}
+
+- (BOOL)isStarred {
+	struct mail_flags *flags = myMessage->msg_flags;
+	if (flags != NULL) {
+		BOOL flag_starred = (flags->fl_flags & MAIL_FLAG_FLAGGED);
+		return flag_starred;
 	}
 	return NO;
 }
