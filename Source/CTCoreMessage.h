@@ -108,6 +108,11 @@
 - (NSString *)body;
 
 /*!
+    @abstract	Returns YES if the message has an html body.
+ */
+- (BOOL)hasHtmlBody;
+
+/*!
  @abstract	This method returns the html body as an NSString.
  */
 - (NSString *)htmlBody;
