@@ -3199,6 +3199,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "-DHAVE_CONFIG_H";
 				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
 			};
 			name = Debug;
 		};
@@ -3212,6 +3213,7 @@
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/include";
 				OTHER_CFLAGS = "-DHAVE_CONFIG_H";
 				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -3259,7 +3261,7 @@
 					"$(SRCROOT)/include",
 					"$(SRCROOT)/../../../lib/iPhoneOS-V7-4.3/include",
 				);
-				INSTALL_PATH = /usr/local/lib;
+				INSTALL_PATH = "";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../../lib/iPhoneOS-V7-4.3/lib\"",
@@ -3283,7 +3285,7 @@
 					"$(SRCROOT)/include",
 					"$(SRCROOT)/../../../lib/iPhoneOS-V7-4.3/include",
 				);
-				INSTALL_PATH = /usr/local/lib;
+				INSTALL_PATH = "";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/../../../lib/iPhoneOS-V7-4.3/lib\"",
