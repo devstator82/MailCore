@@ -257,6 +257,23 @@ char * etpan_encode_mime_header(char * phrase)
 	}
 }
 
+- (void)setHtmlBody:(NSString *)body {
+	CTMIME *oldMIME = myParsedMIME;
+	CTMIME_TextPart *text = [CTMIME_TextPart mimeTextPartWithString:body];
+    text.contentType = @"text/html";
+	
+	// If myParsedMIME is already a multi-part mime, just add it. otherwise replace it.
+    //TODO: If setBody is called multiple times it will add text parts multiple times. Instead
+    // it should find the existing text part (if there is one) and replace it
+	if ([myParsedMIME isKindOfClass:[CTMIME_MultiPart class]]) {
+		[(CTMIME_MultiPart *)myParsedMIME addMIMEPart:text];
+	} else {
+		CTMIME_MessagePart *messagePart = [CTMIME_MessagePart mimeMessagePartWithContent:text];
+		myParsedMIME = [messagePart retain];
+		[oldMIME release];		
+	}
+}
+
 - (NSArray *)attachments {
 	NSMutableArray *attachments = [NSMutableArray array];
 

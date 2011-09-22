@@ -43,6 +43,7 @@
 	self = [super init];
 	if (self) {
 		[self setString:string];
+        [self setContentType:@"text/plain"];
 	}
 	return self;
 }
@@ -95,7 +96,7 @@
 	mime_fields = mailmime_fields_new_encoding(MAILMIME_MECHANISM_8BIT);
 	assert(mime_fields != NULL);
 
-	content = mailmime_content_new_with_str("text/plain");
+	content = mailmime_content_new_with_str([self.contentType cStringUsingEncoding:NSUTF8StringEncoding]);
 	assert(content != NULL);
 
 	param = mailmime_parameter_new(strdup("charset"), strdup(DEST_CHARSET));

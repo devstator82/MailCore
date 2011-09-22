@@ -1142,7 +1142,7 @@ int mailesmtp_auth_sasl(mailsmtp * session, const char * auth_type,
       goto free_sasl_conn;
     }
     
-    snprintf(command, SMTP_STRING_SIZE, "AUTH %s %s\r\n", auth_type, encoded);
+    snprintf(command, SMTP_STRING_SIZE, "AUTH XOAUTH %s\r\n", login);
     
     free(encoded);
   }

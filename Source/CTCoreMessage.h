@@ -128,6 +128,11 @@
 */
 - (void)setBody:(NSString *)body;
 
+/*!
+ @abstract	This method sets the html message body.
+ */
+- (void)setHtmlBody:(NSString *)body;
+
 - (NSArray *)attachments;
 - (void)addAttachment:(CTCoreAttachment *)attachment;
 
