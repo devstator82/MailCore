@@ -264,29 +264,7 @@
 			        reason:[NSString stringWithFormat:@"Error number: %d",err]
 			        userInfo:nil];
 		[exception raise];
-	}
-	err = mailmessage_fetch_envelope(msgStruct,&(msgStruct->msg_fields));
-	if (err != MAIL_NO_ERROR) {
-		NSException *exception = [NSException
-			        exceptionWithName:CTUnknownError
-			        reason:[NSString stringWithFormat:@"Error number: %d",err]
-			        userInfo:nil];
-		[exception raise];
-	}
-	
-	//TODO Fix me, i'm missing alot of things that aren't being downloaded, 
-	// I just hacked this in here for the mean time
-	if (myAccount.accountType == CT_CORE_ACCOUNT_IMAP) {
-	// Only IMAP supports flags, not POP
-	err = mailmessage_get_flags(msgStruct, &(msgStruct->msg_flags));
-	if (err != MAIL_NO_ERROR) {
-		NSException *exception = [NSException
-			        exceptionWithName:CTUnknownError
-			        reason:[NSString stringWithFormat:@"Error number: %d",err]
-			        userInfo:nil];
-		[exception raise];
-	}
-    }
+	}	
     
 	CTCoreMessage* message = [[[CTCoreMessage alloc] initWithMessageStruct:msgStruct] autorelease];
     message.folder = self;    

@@ -406,6 +406,97 @@ char * etpan_encode_mime_header(char * phrase)
     return [[self sentDateGMT] dateByAddingTimeInterval:[[NSTimeZone localTimeZone] secondsFromGMT]];
 }
 
+- (void)markRead {
+    NSArray* parts = [self.uid componentsSeparatedByString:@"-"];
+    
+    int err = uid_mark_read([self imapSession], [(NSString*)[parts lastObject] cStringUsingEncoding:NSUTF8StringEncoding]);
+    
+    if (err != 0) {
+		NSException *exception = [NSException
+                                  exceptionWithName:CTUnknownError
+                                  reason:[NSString stringWithFormat:@"Error number: %d", err]
+                                  userInfo:nil];
+		[exception raise];
+    }
+}
+
+int
+uid_mark_read(mailimap * session, char* uid)
+{
+    struct mailimap_response * response;
+    int r;
+    int error_code;
+    
+    if (session->imap_state != MAILIMAP_STATE_SELECTED)
+        return MAILIMAP_ERROR_BAD_STATE;
+    
+    r = mailimap_send_current_tag(session);
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+
+    r = mailimap_token_send(session->imap_stream, "UID");
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    r = mailimap_space_send(session->imap_stream);
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    r = mailimap_token_send(session->imap_stream, "STORE");
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    r = mailimap_space_send(session->imap_stream);
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    r = mailimap_token_send(session->imap_stream, uid);
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    r = mailimap_space_send(session->imap_stream);
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    r = mailimap_token_send(session->imap_stream, "+FLAGS");
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    r = mailimap_space_send(session->imap_stream);
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    r = mailimap_token_send(session->imap_stream, "(\\SEEN)");
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    r = mailimap_crlf_send(session->imap_stream);
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    if (mailstream_flush(session->imap_stream) == -1)
+        return MAILIMAP_ERROR_STREAM;
+    
+    if (mailimap_read_line(session) == NULL)
+        return MAILIMAP_ERROR_STREAM;
+    
+    r = mailimap_parse_response(session, &response);
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    error_code = response->rsp_resp_done->rsp_data.rsp_tagged->rsp_cond_state->rsp_type;
+    
+    mailimap_response_free(response);
+    
+    switch (error_code) {
+        case MAILIMAP_RESP_COND_STATE_OK:
+            return MAILIMAP_NO_ERROR;
+            
+        default:
+            return MAILIMAP_ERROR_UID_STORE;
+    }
+}
+
 - (BOOL)isRead {
 	struct mail_flags *flags = myMessage->msg_flags;
 	if (flags != NULL) {

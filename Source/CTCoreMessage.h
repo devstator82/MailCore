@@ -162,6 +162,11 @@
 - (NSDate *)sentDateLocalTimeZone; 
 
 /*!
+    @abstract	Will mark the message as read on the server.
+ */
+- (void)markRead;
+
+/*!
  @abstract	Returns YES if the message is read.
  */
 - (BOOL)isRead;
