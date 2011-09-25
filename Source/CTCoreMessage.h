@@ -167,6 +167,26 @@
 - (void)markRead;
 
 /*!
+    @abstract	Will mark the message as read on the server.
+ */
+- (void)markUnread;
+
+/*!
+    @abstract	Will mark the message as starred on the server.
+ */
+- (void)star;
+
+/*!
+    @abstract	Will mark the message as unstarred on the server.
+ */
+- (void)unstar;
+
+/*!
+    @abstract	Will move the message to the specified folder on the server.
+ */
+- (void)move:(NSString*)targetFolder;
+
+/*!
  @abstract	Returns YES if the message is read.
  */
 - (BOOL)isRead;

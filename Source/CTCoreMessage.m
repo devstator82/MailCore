@@ -406,22 +406,7 @@ char * etpan_encode_mime_header(char * phrase)
     return [[self sentDateGMT] dateByAddingTimeInterval:[[NSTimeZone localTimeZone] secondsFromGMT]];
 }
 
-- (void)markRead {
-    NSArray* parts = [self.uid componentsSeparatedByString:@"-"];
-    
-    int err = uid_mark_read([self imapSession], [(NSString*)[parts lastObject] cStringUsingEncoding:NSUTF8StringEncoding]);
-    
-    if (err != 0) {
-		NSException *exception = [NSException
-                                  exceptionWithName:CTUnknownError
-                                  reason:[NSString stringWithFormat:@"Error number: %d", err]
-                                  userInfo:nil];
-		[exception raise];
-    }
-}
-
-int
-uid_mark_read(mailimap * session, char* uid)
+int uid_store(mailimap * session, const char* uid, char* flag, bool add)
 {
     struct mailimap_response * response;
     int r;
@@ -433,7 +418,7 @@ uid_mark_read(mailimap * session, char* uid)
     r = mailimap_send_current_tag(session);
     if (r != MAILIMAP_NO_ERROR)
         return r;
-
+    
     r = mailimap_token_send(session->imap_stream, "UID");
     if (r != MAILIMAP_NO_ERROR)
         return r;
@@ -458,7 +443,7 @@ uid_mark_read(mailimap * session, char* uid)
     if (r != MAILIMAP_NO_ERROR)
         return r;
     
-    r = mailimap_token_send(session->imap_stream, "+FLAGS");
+    r = mailimap_token_send(session->imap_stream, add ? "+FLAGS" : "-FLAGS");
     if (r != MAILIMAP_NO_ERROR)
         return r;
     
@@ -466,7 +451,7 @@ uid_mark_read(mailimap * session, char* uid)
     if (r != MAILIMAP_NO_ERROR)
         return r;
     
-    r = mailimap_token_send(session->imap_stream, "(\\SEEN)");
+    r = mailimap_token_send(session->imap_stream, flag);
     if (r != MAILIMAP_NO_ERROR)
         return r;
     
@@ -494,6 +479,212 @@ uid_mark_read(mailimap * session, char* uid)
             
         default:
             return MAILIMAP_ERROR_UID_STORE;
+    }
+}
+
+int uid_copy(mailimap * session, const char* uid, const char* folder)
+{
+    struct mailimap_response * response;
+    int r;
+    int error_code;
+    
+    if (session->imap_state != MAILIMAP_STATE_SELECTED)
+        return MAILIMAP_ERROR_BAD_STATE;
+    
+    r = mailimap_send_current_tag(session);
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    r = mailimap_token_send(session->imap_stream, "UID");
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    r = mailimap_space_send(session->imap_stream);
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    r = mailimap_token_send(session->imap_stream, "COPY");
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    r = mailimap_space_send(session->imap_stream);
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    r = mailimap_token_send(session->imap_stream, uid);
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    r = mailimap_space_send(session->imap_stream);
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    r = mailimap_token_send(session->imap_stream, folder);
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    r = mailimap_space_send(session->imap_stream);
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    r = mailimap_crlf_send(session->imap_stream);
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    if (mailstream_flush(session->imap_stream) == -1)
+        return MAILIMAP_ERROR_STREAM;
+    
+    if (mailimap_read_line(session) == NULL)
+        return MAILIMAP_ERROR_STREAM;
+    
+    r = mailimap_parse_response(session, &response);
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    error_code = response->rsp_resp_done->rsp_data.rsp_tagged->rsp_cond_state->rsp_type;
+    
+    mailimap_response_free(response);
+    
+    switch (error_code) {
+        case MAILIMAP_RESP_COND_STATE_OK:
+            return MAILIMAP_NO_ERROR;
+            
+        default:
+            return MAILIMAP_ERROR_UID_STORE;
+    }
+}
+
+int expunge(mailimap * session)
+{
+    struct mailimap_response * response;
+    int r;
+    int error_code;
+    
+    if (session->imap_state != MAILIMAP_STATE_SELECTED)
+        return MAILIMAP_ERROR_BAD_STATE;
+    
+    r = mailimap_send_current_tag(session);
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    r = mailimap_token_send(session->imap_stream, "EXPUNGE");
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    r = mailimap_crlf_send(session->imap_stream);
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    if (mailstream_flush(session->imap_stream) == -1)
+        return MAILIMAP_ERROR_STREAM;
+    
+    if (mailimap_read_line(session) == NULL)
+        return MAILIMAP_ERROR_STREAM;
+    
+    r = mailimap_parse_response(session, &response);
+    if (r != MAILIMAP_NO_ERROR)
+        return r;
+    
+    error_code = response->rsp_resp_done->rsp_data.rsp_tagged->rsp_cond_state->rsp_type;
+    
+    mailimap_response_free(response);
+    
+    switch (error_code) {
+        case MAILIMAP_RESP_COND_STATE_OK:
+            return MAILIMAP_NO_ERROR;
+            
+        default:
+            return MAILIMAP_ERROR_UID_STORE;
+    }
+}
+
+- (void)markRead {
+    NSArray* parts = [self.uid componentsSeparatedByString:@"-"];    
+    const char* uid = [(NSString*)[parts lastObject] cStringUsingEncoding:NSUTF8StringEncoding];
+    int err = uid_store([self imapSession], uid, "(\\SEEN)", true);
+    
+    if (err != 0) {
+		NSException *exception = [NSException
+                                  exceptionWithName:CTUnknownError
+                                  reason:[NSString stringWithFormat:@"Error number: %d", err]
+                                  userInfo:nil];
+		[exception raise];
+    }
+}
+
+- (void)markUnread {
+    NSArray* parts = [self.uid componentsSeparatedByString:@"-"];    
+    const char* uid = [(NSString*)[parts lastObject] cStringUsingEncoding:NSUTF8StringEncoding];
+    int err = uid_store([self imapSession], uid, "(\\SEEN)", false);
+    
+    if (err != 0) {
+		NSException *exception = [NSException
+                                  exceptionWithName:CTUnknownError
+                                  reason:[NSString stringWithFormat:@"Error number: %d", err]
+                                  userInfo:nil];
+		[exception raise];
+    }
+}
+
+- (void)star {
+    NSArray* parts = [self.uid componentsSeparatedByString:@"-"];    
+    const char* uid = [(NSString*)[parts lastObject] cStringUsingEncoding:NSUTF8StringEncoding];
+    int err = uid_store([self imapSession], uid, "(\\FLAGGED)", true);
+    
+    if (err != 0) {
+		NSException *exception = [NSException
+                                  exceptionWithName:CTUnknownError
+                                  reason:[NSString stringWithFormat:@"Error number: %d", err]
+                                  userInfo:nil];
+		[exception raise];
+    }
+}
+
+- (void)unstar {
+    NSArray* parts = [self.uid componentsSeparatedByString:@"-"];    
+    const char* uid = [(NSString*)[parts lastObject] cStringUsingEncoding:NSUTF8StringEncoding];
+    int err = uid_store([self imapSession], uid, "(\\FLAGGED)", false);
+    
+    if (err != 0) {
+		NSException *exception = [NSException
+                                  exceptionWithName:CTUnknownError
+                                  reason:[NSString stringWithFormat:@"Error number: %d", err]
+                                  userInfo:nil];
+		[exception raise];
+    }
+}
+
+- (void)move:(NSString*)targetFolder {
+    NSArray* parts = [self.uid componentsSeparatedByString:@"-"];    
+    const char* uid = [(NSString*)[parts lastObject] cStringUsingEncoding:NSUTF8StringEncoding];
+    int err = uid_copy([self imapSession], uid, [targetFolder cStringUsingEncoding:NSUTF8StringEncoding]);
+    
+    if (err != 0) {
+		NSException *exception = [NSException
+                                  exceptionWithName:CTUnknownError
+                                  reason:[NSString stringWithFormat:@"Error number: %d", err]
+                                  userInfo:nil];
+		[exception raise];
+    }
+    
+    err = uid_store([self imapSession], uid, "(\\DELETED)", true);
+    
+    if (err != 0) {
+		NSException *exception = [NSException
+                                  exceptionWithName:CTUnknownError
+                                  reason:[NSString stringWithFormat:@"Error number: %d", err]
+                                  userInfo:nil];
+		[exception raise];
+    }
+    
+    err = expunge([self imapSession]);
+    
+    if (err != 0) {
+		NSException *exception = [NSException
+                                  exceptionWithName:CTUnknownError
+                                  reason:[NSString stringWithFormat:@"Error number: %d", err]
+                                  userInfo:nil];
+		[exception raise];
     }
 }
 
