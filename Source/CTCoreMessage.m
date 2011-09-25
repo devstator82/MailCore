@@ -519,11 +519,7 @@ int uid_copy(mailimap * session, const char* uid, const char* folder)
     if (r != MAILIMAP_NO_ERROR)
         return r;
     
-    r = mailimap_token_send(session->imap_stream, folder);
-    if (r != MAILIMAP_NO_ERROR)
-        return r;
-    
-    r = mailimap_space_send(session->imap_stream);
+    r = mailimap_mailbox_send(session->imap_stream, folder);
     if (r != MAILIMAP_NO_ERROR)
         return r;
     
