@@ -157,10 +157,11 @@ char * etpan_encode_mime_header(char * phrase)
 	return result;
 }
 
-- (BOOL)hasHtmlBody {
-    CTMIME* mime = myParsedMIME;
-    
-    if ([mime isKindOfClass:[CTMIME_TextPart class]]) {
+- (BOOL)hasHtmlBody:(CTMIME *)mime {
+    if ([mime isKindOfClass:[CTMIME_MessagePart class]]) {
+        return [self hasHtmlBody:[mime content]];
+	}
+    else if ([mime isKindOfClass:[CTMIME_TextPart class]]) {
         if ([mime.contentType rangeOfString:@"text/html"].location != NSNotFound) {
             return YES;
 		}
@@ -170,6 +171,12 @@ char * etpan_encode_mime_header(char * phrase)
     }
     
     return NO;
+}
+
+- (BOOL)hasHtmlBody {
+    CTMIME* mime = myParsedMIME;
+    
+    return [self hasHtmlBody:mime];
 }
 
 - (NSString *)htmlBody {

@@ -110,6 +110,7 @@
 /*!
     @abstract	Returns YES if the message has an html body.
  */
+- (BOOL)hasHtmlBody:(CTMIME *)mime;
 - (BOOL)hasHtmlBody;
 
 /*!
