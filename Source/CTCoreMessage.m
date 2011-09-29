@@ -162,7 +162,7 @@ char * etpan_encode_mime_header(char * phrase)
         return [self hasHtmlBody:[mime content]];
 	}
     else if ([mime isKindOfClass:[CTMIME_TextPart class]]) {
-        if ([mime.contentType rangeOfString:@"text/html"].location != NSNotFound) {
+        if ([[mime.contentType lowercaseString] rangeOfString:@"text/html"].location != NSNotFound) {
             return YES;
 		}
     }
@@ -203,7 +203,7 @@ char * etpan_encode_mime_header(char * phrase)
 		[self _buildUpBodyText:[mime content] result:result];
 	}
 	else if ([mime isKindOfClass:[CTMIME_TextPart class]]) {
-		if ([mime.contentType isEqualToString:@"text/plain"]) {
+		if ([[mime.contentType lowercaseString] rangeOfString:@"text/plain"].location != NSNotFound) {
 			[(CTMIME_TextPart *)mime fetchPart];
 			NSString* y = [mime content];
 			if(y != nil) {
@@ -229,7 +229,7 @@ char * etpan_encode_mime_header(char * phrase)
 		[self _buildUpHtmlBodyText:[mime content] result:result];
 	}
 	else if ([mime isKindOfClass:[CTMIME_TextPart class]]) {
-        if ([mime.contentType rangeOfString:@"text/html"].location != NSNotFound) {
+        if ([[mime.contentType lowercaseString] rangeOfString:@"text/html"].location != NSNotFound) {
 			[(CTMIME_TextPart *)mime fetchPart];
 			NSString* y = [mime content];
 			if(y != nil) {
