@@ -420,12 +420,12 @@ static int imap_mailstorage_connect(struct mailstorage * storage)
     goto err;
   }
 
-  r = mailsession_select_folder(session, "INBOX");
-  if (r != MAIL_NO_ERROR) {
-    mailsession_logout(session);
-    res = r;
-    goto err;
-  }
+//  r = mailsession_select_folder(session, "INBOX");
+//  if (r != MAIL_NO_ERROR) {
+//    mailsession_logout(session);
+//    res = r;
+//    goto err;
+//  }
 
   storage->sto_session = session;
   storage->sto_driver = &imap_mailstorage_driver;

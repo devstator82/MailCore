@@ -97,7 +97,6 @@
 
 - (NSSet *)messageObjectsFromIndex:(unsigned int)start toIndex:(unsigned int)end {
     NSMutableSet *messages = [NSMutableSet set];
-	[self connect];
 	
     if (myAccount.accountType == CT_CORE_ACCOUNT_IMAP) {
 	struct mailmessage_list * env_list;
