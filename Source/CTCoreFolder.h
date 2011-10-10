@@ -76,6 +76,11 @@
 - (void)disconnect;
 
 /*
+    Implementation is in beta :-)
+ */
+- (NSSet *)headerObjectsFromIndex:(unsigned int)start toIndex:(unsigned int)end;
+
+/*
 	Implementation is in alpha.
 */
 //TODO Document Me!

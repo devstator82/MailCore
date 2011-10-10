@@ -36,6 +36,7 @@
 #import "CTSMTPConnection.h"
 #import "CTBareMessage.h"
 #import "CTBareAttachment.h"
+#import "CTCoreHeader.h"
 #import <libetpan/libetpan.h>
 #import "MailCoreTypes.h"
 #import "MailCoreUtilities.h"

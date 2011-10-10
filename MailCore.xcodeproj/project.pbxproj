@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		04A1BF8B14432D350024B490 /* CTCoreHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 04A1BF8914432D350024B490 /* CTCoreHeader.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		04A1BF8C14432D350024B490 /* CTCoreHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A1BF8A14432D350024B490 /* CTCoreHeader.m */; };
+		04A1BF8D14432D350024B490 /* CTCoreHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A1BF8A14432D350024B490 /* CTCoreHeader.m */; };
+		04CFCAED1443341C0099284C /* CTCoreHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 04A1BF8A14432D350024B490 /* CTCoreHeader.m */; };
 		2D538B45119803A6000AB4A2 /* CTSMTPAsyncConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D538B42119803A6000AB4A2 /* CTSMTPAsyncConnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2D538B46119803A6000AB4A2 /* CTSMTPAsyncConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D538B43119803A6000AB4A2 /* CTSMTPAsyncConnection.m */; };
 		2D538B48119803E2000AB4A2 /* CTSMTPAsyncConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D538B43119803A6000AB4A2 /* CTSMTPAsyncConnection.m */; };
@@ -144,6 +148,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		04A1BF8914432D350024B490 /* CTCoreHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CTCoreHeader.h; path = Source/CTCoreHeader.h; sourceTree = "<group>"; };
+		04A1BF8A14432D350024B490 /* CTCoreHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CTCoreHeader.m; path = Source/CTCoreHeader.m; sourceTree = "<group>"; };
 		0867D69BFE84028FC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		0867D6A5FE840307C02AAC07 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
@@ -306,6 +312,8 @@
 				F81B88530A74AA7100143DF6 /* CTCoreAddress.m */,
 				F81B88540A74AA7100143DF6 /* CTCoreFolder.h */,
 				F81B88550A74AA7100143DF6 /* CTCoreFolder.m */,
+				04A1BF8914432D350024B490 /* CTCoreHeader.h */,
+				04A1BF8A14432D350024B490 /* CTCoreHeader.m */,
 				F81B88560A74AA7100143DF6 /* CTCoreMessage.h */,
 				F81B88570A74AA7100143DF6 /* CTCoreMessage.m */,
 				F858CC470C51DE6B00EF1B3D /* CTBareMessage.h */,
@@ -449,6 +457,7 @@
 				F81E266E0C6ED4E100B3FBAC /* CTCoreAttachment.h in Headers */,
 				F8430BB10C72B16000753941 /* CTMIME_Enumerator.h in Headers */,
 				2D538B45119803A6000AB4A2 /* CTSMTPAsyncConnection.h in Headers */,
+				04A1BF8B14432D350024B490 /* CTCoreHeader.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -655,6 +664,7 @@
 				F81E266F0C6ED4E100B3FBAC /* CTCoreAttachment.m in Sources */,
 				F8430BB20C72B16000753941 /* CTMIME_Enumerator.m in Sources */,
 				2D538B46119803A6000AB4A2 /* CTSMTPAsyncConnection.m in Sources */,
+				04A1BF8C14432D350024B490 /* CTCoreHeader.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -667,6 +677,7 @@
 				F82D7C870F48ACB500ADA65C /* CTBareMessageTests.m in Sources */,
 				F82D7C880F48ACB500ADA65C /* CTCoreAddressTests.m in Sources */,
 				F82D7C890F48ACB500ADA65C /* CTCoreAttachmentTests.m in Sources */,
+				04A1BF8D14432D350024B490 /* CTCoreHeader.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -674,6 +685,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04CFCAED1443341C0099284C /* CTCoreHeader.m in Sources */,
 				F8618D1F10DAE1EB00C41188 /* JRLog.m in Sources */,
 				F8618D0D10DAE1E600C41188 /* CTSMTPConnection.m in Sources */,
 				F8618D0E10DAE1E600C41188 /* CTSMTP.m in Sources */,

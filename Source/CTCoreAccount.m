@@ -156,12 +156,20 @@
 }
 
 - (void)done {
-    int err = mailimap_idle_done([self session]);
+    int r = mailimap_token_send([self session]->imap_stream, "DONE");
+    if (r != MAILIMAP_NO_ERROR)
+        return;
     
-    if (err != 0) {
+    r = mailimap_crlf_send([self session]->imap_stream);
+    if (r != MAILIMAP_NO_ERROR)
+        return;
+    
+    r = (mailstream_flush([self session]->imap_stream));
+    
+    if (r != 0) {
 		NSException *exception = [NSException
                                   exceptionWithName:CTUnknownError
-                                  reason:[NSString stringWithFormat:@"Error number: %d", err]
+                                  reason:[NSString stringWithFormat:@"Error number: %d", r]
                                   userInfo:nil];
 		[exception raise];
     }

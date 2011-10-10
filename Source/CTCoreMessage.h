@@ -49,9 +49,15 @@
 	CTMIME *myParsedMIME;
 	NSUInteger mySequenceNumber;
     CTCoreFolder* folder;
+    NSString* gmail_id;
+    NSString* gmail_thread_id;
 }
+
+@property(readonly) mailmessage *message;
 @property(retain) CTMIME *mime;
 @property(nonatomic, retain) CTCoreFolder* folder;
+@property(nonatomic, copy) NSString* gmail_id;
+@property(nonatomic, copy) NSString* gmail_thread_id;
 
 //TODO Parse this stuff: message_id, inReplyTo, references, comments, keywords, headers
 
@@ -212,16 +218,6 @@
 	@abstract	Returns an NSString containing the messages UID.
 */
 - (NSString *)uid;
-
-/*!
-    @abstract	Returns an NSString containing the gmail specific message id.
- */
-- (NSString *)gmail_id;
-
-/*!
-    @abstract	Returns an NSString containing the gmail specific thread id.
- */
-- (NSString *)gmail_thread_id;
 
 /*!
 	@abstract	Returns the message sequence number, this number cannot be used across sessions

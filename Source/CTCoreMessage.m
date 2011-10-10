@@ -63,7 +63,7 @@ char * etpan_encode_mime_header(char * phrase)
 */
 
 @implementation CTCoreMessage
-@synthesize mime=myParsedMIME, folder;
+@synthesize mime=myParsedMIME, folder, gmail_id, gmail_thread_id;
 
 - (id)init {
 	[super init];
@@ -75,6 +75,9 @@ char * etpan_encode_mime_header(char * phrase)
 	return self;
 }
 
+- (mailmessage *) message {
+    return myMessage;
+}
 
 - (id)initWithMessageStruct:(struct mailmessage *)message {
 	self = [super init];
@@ -144,6 +147,11 @@ char * etpan_encode_mime_header(char * phrase)
 	if(err != 0) { // added by gabor
 		return err;
 	}
+    
+    if (myFields != NULL)
+		mailimf_single_fields_free(myFields);
+
+    myFields = mailimf_single_fields_new(dummyMime->mm_data.mm_message.mm_fields);
 	myParsedMIME = [[CTMIMEFactory createMIMEWithMIMEStruct:[self messageStruct]->msg_mime 
 						forMessage:[self messageStruct]] retain];
 	
@@ -729,14 +737,6 @@ int expunge(mailimap * session)
 
 - (NSString *)uid {
 	return [NSString stringWithCString:myMessage->msg_uid encoding:NSUTF8StringEncoding];
-}
-
-- (NSString *)gmail_id {
-    return [NSString stringWithCString:myMessage->gm_msgid encoding:NSUTF8StringEncoding];
-}
-
-- (NSString *)gmail_thread_id {
-    return [NSString stringWithCString:myMessage->gm_thrid encoding:NSUTF8StringEncoding];
 }
 
 - (NSUInteger)messageSize {
