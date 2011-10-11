@@ -97,7 +97,6 @@
 }
 
 - (NSSet *)headerObjectsFromIndex:(unsigned int)start toIndex:(unsigned int)end {
-    struct mailmessage_list * env_list;
 	int r;
 	struct mailimap_fetch_att * fetch_att;
 	struct mailimap_fetch_type * fetch_type;
@@ -166,7 +165,8 @@
     
 	mailimap_fetch_type_free(fetch_type);
 	mailimap_set_free(set);
-        
+	mailimap_fetch_list_free(fetch_result);	
+    
     NSString* data = [NSString stringWithCString:[self imapSession]->imap_stream_buffer->str encoding:NSUTF8StringEncoding];
     
     NSMutableSet* resultSet = [NSMutableSet set];

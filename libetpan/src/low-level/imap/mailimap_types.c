@@ -1857,6 +1857,14 @@ mailimap_msg_att_static_free(struct mailimap_msg_att_static * item)
     if (item->att_data.att_body_section != NULL)
       mailimap_msg_att_body_section_free(item->att_data.att_body_section);
     break;
+  case MAILIMAP_MSG_ATT_GM_MSGID:
+      if (item->att_data.att_gm_msgid != NULL)
+          mailimap_custom_string_free(item->att_data.att_gm_msgid);
+      break;
+  case MAILIMAP_MSG_ATT_GM_THRID:
+      if (item->att_data.att_gm_thrid != NULL)
+          mailimap_custom_string_free(item->att_data.att_gm_thrid);
+      break;
   }
   free(item);
 }

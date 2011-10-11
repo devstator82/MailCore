@@ -176,8 +176,8 @@
 }
 
 - (void)disconnect {
-	connected = NO;
-	mailstorage_disconnect(myStorage);
+	connected = NO;    
+	mailstorage_disconnect(myStorage); 
 }
 
 - (CTCoreFolder *)folderWithPath:(NSString *)path {
@@ -322,9 +322,9 @@
         // Folders marked with /NoSelect have mbf_type 0, so ignore those (for ex. the root [GMail] virtual folder)
         if (mailboxFlagsStruct->mbf_type != 0)
         {
-            CTCoreFolder* folder = [[CTCoreFolder alloc] initWithPath:mailboxNameObject inAccount:self withType:flagName];
-            
-            [allFolders addObject:folder];
+            CTCoreFolder* folder = [[CTCoreFolder alloc] initWithPath:mailboxNameObject inAccount:self withType:flagName];            
+            [allFolders addObject:folder];            
+            [folder release];
         }
 	}
 	mailimap_list_result_free(allList);
