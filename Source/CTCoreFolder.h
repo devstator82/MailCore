@@ -78,6 +78,11 @@
 /*
     Implementation is in beta :-)
  */
+- (NSSet *)search:(NSString*)criteria;
+
+/*
+    Implementation is in beta :-)
+ */
 - (NSSet *)headerObjectsFromIndex:(unsigned int)start toIndex:(unsigned int)end;
 
 /*

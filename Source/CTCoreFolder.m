@@ -96,6 +96,119 @@
 	return myFolder;
 }
 
+- (NSSet *)search:(NSString*)criteria
+{
+    int r;
+    clist * imap_result;
+    clistiter * cur;
+    
+    r = mailimap_search([self imapSession], [criteria UTF8String], nil, NULL, &imap_result);
+    
+    if (r != MAIL_NO_ERROR) {
+		NSException *exception = [NSException
+                                  exceptionWithName:CTUnknownError
+                                  reason:[NSString stringWithFormat:@"Error number: %d", r]
+                                  userInfo:nil];
+		[exception raise];
+	}
+        
+    struct mailimap_fetch_att * fetch_att;
+	struct mailimap_fetch_type * fetch_type;
+	struct mailimap_set * set;
+	clist * fetch_result;
+            
+	set = mailimap_set_new_empty();
+	if (set == NULL) 
+		return nil;
+    
+    for(cur = clist_begin(imap_result) ; cur != NULL ; cur = clist_next(cur)) {
+        uint32_t uid = * (uint32_t *) clist_content(cur);        
+        struct mailimap_set_item * set_item = mailimap_set_item_new_single(uid);
+        
+        mailimap_set_add(set, set_item);
+    }
+    
+	fetch_type = mailimap_fetch_type_new_fetch_att_list_empty();
+	fetch_att = mailimap_fetch_att_new_uid();
+	r = mailimap_fetch_type_new_fetch_att_list_add(fetch_type, fetch_att);
+	if (r != MAILIMAP_NO_ERROR) {
+		mailimap_fetch_att_free(fetch_att);
+		return nil;
+	}
+    
+	fetch_att = mailimap_fetch_att_new_flags();
+	if (fetch_att == NULL) {
+		mailimap_fetch_type_free(fetch_type);
+		return nil;
+	}
+    
+	r = mailimap_fetch_type_new_fetch_att_list_add(fetch_type, fetch_att);
+	if (r != MAILIMAP_NO_ERROR) {
+		mailimap_fetch_att_free(fetch_att);
+		mailimap_fetch_type_free(fetch_type);
+		return nil;
+	}
+    
+    fetch_att = mailimap_fetch_att_new_gmail_message_id();
+    if (fetch_att == NULL) {
+        mailimap_fetch_type_free(fetch_type);
+        return nil;
+    }
+    
+    r = mailimap_fetch_type_new_fetch_att_list_add(fetch_type, fetch_att);
+    if (r != MAILIMAP_NO_ERROR) {
+        mailimap_fetch_att_free(fetch_att);
+        mailimap_fetch_type_free(fetch_type);
+        return nil;
+    }
+    
+    fetch_att = mailimap_fetch_att_new_gmail_thread_id();
+    if (fetch_att == NULL) {
+        mailimap_fetch_type_free(fetch_type);
+        return nil;
+    }
+    
+    r = mailimap_fetch_type_new_fetch_att_list_add(fetch_type, fetch_att);
+    if (r != MAILIMAP_NO_ERROR) {
+        mailimap_fetch_att_free(fetch_att);
+        mailimap_fetch_type_free(fetch_type);
+        return nil;
+    }
+    
+	r = mailimap_fetch([self imapSession], set, fetch_type, &fetch_result);
+	if (r != MAIL_NO_ERROR) {
+		NSException *exception = [NSException
+                                  exceptionWithName:CTUnknownError
+                                  reason:[NSString stringWithFormat:@"Error number: %d",r]
+                                  userInfo:nil];
+		[exception raise];
+	}
+    
+    mailimap_search_result_free(imap_result);
+	mailimap_fetch_type_free(fetch_type);
+	mailimap_set_free(set);
+	mailimap_fetch_list_free(fetch_result);	
+    
+    NSString* data = [NSString stringWithCString:[self imapSession]->imap_stream_buffer->str encoding:NSUTF8StringEncoding];
+    
+    NSMutableSet* resultSet = [NSMutableSet set];
+    NSArray* lines = [data componentsSeparatedByString:@"\n"];
+    uint32_t uivalidity = [self imapSession]->imap_selection_info->sel_uidvalidity;
+    
+    for (NSString* str in lines) {
+        if ([str hasPrefix:@"*"]) {
+            CTCoreHeader* header = [[CTCoreHeader alloc] initWithString:str];
+            header.folder = self;
+            header.uid = [NSString stringWithFormat:@"%d-%@", uivalidity, header.uid];
+            
+            [resultSet addObject:header];
+            [header release];
+        }
+    }
+    
+    return resultSet;
+}
+
 - (NSSet *)headerObjectsFromIndex:(unsigned int)start toIndex:(unsigned int)end {
 	int r;
 	struct mailimap_fetch_att * fetch_att;
