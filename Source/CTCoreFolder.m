@@ -121,11 +121,21 @@
 	if (set == NULL) 
 		return nil;
     
+    int count = 0;
     for(cur = clist_begin(imap_result) ; cur != NULL ; cur = clist_next(cur)) {
         uint32_t uid = * (uint32_t *) clist_content(cur);        
         struct mailimap_set_item * set_item = mailimap_set_item_new_single(uid);
         
         mailimap_set_add(set, set_item);
+        count++;
+    }
+    
+    if (count == 0)
+    {
+        mailimap_search_result_free(imap_result);
+        mailimap_set_free(set);
+        
+        return [NSSet set];
     }
     
 	fetch_type = mailimap_fetch_type_new_fetch_att_list_empty();
