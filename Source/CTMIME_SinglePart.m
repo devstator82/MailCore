@@ -34,6 +34,23 @@
 #import <libetpan/libetpan.h>
 #import "MailCoreTypes.h"
 
+
+static inline struct imap_session_state_data *
+get_session_data(mailmessage * msg)
+{
+    return msg->msg_session->sess_data;
+}
+
+static inline mailimap * get_imap_session(mailmessage * msg)
+{
+    return get_session_data(msg)->imap_session;
+}
+
+static void download_progress_callback(size_t current, size_t maximum, void * context) {
+    CTProgressBlock block = context;
+    block(current, maximum);
+}
+
 @implementation CTMIME_SinglePart
 @synthesize attached=mAttached;
 @synthesize filename=mFilename;
@@ -109,7 +126,7 @@
 	return self;
 }
 
-- (void)fetchPart {
+- (void)fetchPartWithProgress:(CTProgressBlock)block {
 	if (self.fetched == NO) {
 		struct mailmime_single_fields *mimeFields = NULL;
 		
@@ -121,6 +138,8 @@
 		char *fetchedData;
 		size_t fetchedDataLen;
 		int r;
+        
+        mailimap_set_progress_callback(get_imap_session(mMessage), &download_progress_callback, NULL, block);  
 		r = mailmessage_fetch_section(mMessage, mMime, &fetchedData, &fetchedDataLen);
 		if (r != MAIL_NO_ERROR) {
 		    // This is already released if mailmessage_fetch_section fails - this double free would crash us on iOS 4
@@ -144,6 +163,10 @@
 		self.data = data;
 		self.fetched = YES;
 	}
+}
+
+- (void)fetchPart {
+    [self fetchPartWithProgress:^(size_t curr, size_t max){}];
 }
 
 - (struct mailmime *)buildMIMEStruct {
@@ -175,6 +198,13 @@
 	r = mailmime_set_body_text(mime_sub, (char *)[self.data bytes], [self.data length]);
 	assert(r == MAILIMF_NO_ERROR);
 	return mime_sub;
+}
+
+- (size_t)size {
+    if (mMime) {
+        return mMime->mm_length;
+    }
+    return 0;
 }
 
 
