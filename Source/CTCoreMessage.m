@@ -139,7 +139,7 @@ char * etpan_encode_mime_header(char * phrase)
     return [nsresult autorelease];
 }
 
-- (int)fetchBody {
+- (int)fetchBodyStructure {
 	int err;
 	struct mailmime *dummyMime;
 	//Retrieve message mime and message field
@@ -160,6 +160,9 @@ char * etpan_encode_mime_header(char * phrase)
 
 
 - (NSString *)body {
+    if (myFields == NULL || myParsedMIME == nil) {
+        [self fetchBodyStructure];
+    }
 	NSMutableString *result = [NSMutableString string];
 	[self _buildUpBodyText:myParsedMIME result:result];
 	return result;

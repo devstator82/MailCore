@@ -98,13 +98,8 @@
  */
 - (NSString*)fetchHeaders;
 
-/*!
-    @abstract   This method fetches the GMail specific message headers off of the server. 
-                This method requires that an active MailCore network connection 
-                is present.
- */
 
-- (int)fetchBody;
+- (int)fetchBodyStructure;
 
 /*!
 	@abstract	This method returns the parsed message body as an NSString.
