@@ -101,6 +101,8 @@
 
 - (int)fetchBodyStructure;
 
+- (void)setBodyStructure:(struct mailmime *)mime;
+
 /*!
 	@abstract	This method returns the parsed message body as an NSString.
 				This attempts to return a plain text body and skips HTML. If

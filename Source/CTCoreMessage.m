@@ -84,7 +84,7 @@ char * etpan_encode_mime_header(char * phrase)
 	if (self) {
 		assert(message != NULL);
 		myMessage = message;
-		myFields = mailimf_single_fields_new(message->msg_fields);
+		myFields = mailimf_single_fields_new(message->msg_fields);        
 	}
 	return self;
 }
@@ -115,6 +115,10 @@ char * etpan_encode_mime_header(char * phrase)
 	}
 	[myParsedMIME release];
     [folder release];
+    
+    self.gmail_id = nil;
+    self.gmail_thread_id = nil;
+    
 	[super dealloc];
 }
 
@@ -158,6 +162,17 @@ char * etpan_encode_mime_header(char * phrase)
 	return 0;
 }
 
+- (void)setBodyStructure:(struct mailmime *)mime
+{
+    if (myFields != NULL)
+		mailimf_single_fields_free(myFields);
+    
+    myFields = mailimf_single_fields_new(mime->mm_data.mm_message.mm_fields);
+    myMessage->msg_mime = mime;
+    
+	myParsedMIME = [[CTMIMEFactory createMIMEWithMIMEStruct:[self messageStruct]->msg_mime 
+                                                 forMessage:[self messageStruct]] retain];
+}
 
 - (NSString *)body {
     if (myFields == NULL || myParsedMIME == nil) {
