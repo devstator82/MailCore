@@ -29,6 +29,7 @@
  * SUCH DAMAGE.
  */
 
+#import <MailCore/MailCore.h>
 #import "CTBareAttachment.h"
 
 #import "MailCoreTypes.h"
@@ -50,19 +51,8 @@
 }
 
 -(NSString*)decodedFilename {
-	// added by Gabor
-	if (StringStartsWith(self.filename, @"=?ISO-8859-1?Q?")) {
-		NSString* newName = [self.filename substringFromIndex:[@"=?ISO-8859-1?Q?" length]];
-		newName = [newName stringByReplacingOccurrencesOfString:@"?=" withString:@""];
-		newName = [newName stringByReplacingOccurrencesOfString:@"__" withString:@" "];
-		newName = [newName stringByReplacingOccurrencesOfString:@"=" withString:@"%"];		
-		newName = [newName stringByReplacingPercentEscapesUsingEncoding:NSISOLatin1StringEncoding];
-		return newName;
-	}
-	
-	return self.filename;
+	return [CTCoreMessage decodeMIMEPhrase:[self.filename UTF8String]];
 }
-
 
 - (NSString *)description {
 	return [NSString stringWithFormat:@"ContentType: %@\tFilename: %@",

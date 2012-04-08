@@ -48,7 +48,6 @@
 - (struct mailimf_address_list *)_IMFAddressListFromAddresssList:(NSSet *)addresses;
 - (void)_buildUpBodyText:(CTMIME *)mime result:(NSMutableString *)result;
 - (void)_buildUpHtmlBodyText:(CTMIME *)mime result:(NSMutableString *)result;
-- (NSString *)_decodeMIMEPhrase:(char *)data;
 @end
 
 //TODO Add encode of subjects/from/to
@@ -357,7 +356,7 @@ char * etpan_encode_mime_header(char * phrase)
 - (NSString *)subject {
 	if (myFields->fld_subject == NULL)
 		return @"";
-	NSString *decodedSubject = [self _decodeMIMEPhrase:myFields->fld_subject->sbj_value];
+	NSString *decodedSubject = [CTCoreMessage decodeMIMEPhrase:myFields->fld_subject->sbj_value];
 	if (decodedSubject == nil)
 		return @"";
 	return decodedSubject;
@@ -973,7 +972,7 @@ int expunge(mailimap * session)
 		return address;
     }
 	if (mailbox->mb_display_name != NULL) {
-		NSString *decodedName = [self _decodeMIMEPhrase:mailbox->mb_display_name];
+		NSString *decodedName = [CTCoreMessage decodeMIMEPhrase:mailbox->mb_display_name];
 		if (decodedName == nil) {
 			decodedName = @"";
         }
@@ -1065,7 +1064,7 @@ int expunge(mailimap * session)
 	return imfList;
 }
 
-- (NSString *)_decodeMIMEPhrase:(char *)data {
++ (NSString *)decodeMIMEPhrase:(char *)data {
 	int err;
 	size_t currToken = 0;
 	char *decodedSubject;

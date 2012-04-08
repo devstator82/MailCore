@@ -313,4 +313,7 @@
 /* Intended for advanced use only */
 - (struct mailmessage *)messageStruct;
 - (mailimap *)imapSession;
+
++ (NSString *)decodeMIMEPhrase:(char *)data;
+
 @end
