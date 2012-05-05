@@ -31,6 +31,8 @@
 
 #import <Foundation/Foundation.h>
 
+#import "CTMIME_SinglePart.h"
+
 /*!
 	@class	CTSMTPConnection
 	This is not a class you instantiate! It has only one class method, and that is all you need to send e-mail.
@@ -55,5 +57,5 @@
 	@param		useAuth Pass in YES if you would like to use SASL authentication
 */
 + (void)sendMessage:(CTCoreMessage *)message server:(NSString *)server username:(NSString *)username
-					password:(NSString *)password port:(unsigned int)port useTLS:(BOOL)tls useAuth:(BOOL)auth;
+					password:(NSString *)password port:(unsigned int)port useTLS:(BOOL)tls useAuth:(BOOL)auth progress:(CTProgressBlock)progress;
 @end

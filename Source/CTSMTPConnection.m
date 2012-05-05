@@ -38,15 +38,21 @@
 #import "CTSMTP.h"
 #import "CTESMTP.h"
 
+static void upload_progress_callback(size_t current, size_t maximum, void * context) {
+    CTProgressBlock block = context;
+    block(current, maximum);
+}
+
 //TODO Add more descriptive error messages using mailsmtp_strerror
 @implementation CTSMTPConnection
 + (void)sendMessage:(CTCoreMessage *)message server:(NSString *)server username:(NSString *)username
-					password:(NSString *)password port:(unsigned int)port useTLS:(BOOL)tls useAuth:(BOOL)auth {
+password:(NSString *)password port:(unsigned int)port useTLS:(BOOL)tls useAuth:(BOOL)auth progress:(CTProgressBlock)block {
   	mailsmtp *smtp = NULL;
 	smtp = mailsmtp_new(0, NULL);
 	assert(smtp != NULL);
 
 	CTSMTP *smtpObj = [[CTESMTP alloc] initWithResource:smtp];
+
 	@try {
 		[smtpObj connectToServer:server port:port];
 		if ([smtpObj helo] == false) {
@@ -70,7 +76,9 @@
 		[smtpObj setRecipients:rcpts];
 	 
 		/* data */
+        mailsmtp_set_progress_callback([smtpObj resource], &upload_progress_callback, block);  
 		[smtpObj setData:[message render]];
+        mailsmtp_set_progress_callback([smtpObj resource], NULL, NULL);  
 	}
 	@finally {
 		[smtpObj release];	
