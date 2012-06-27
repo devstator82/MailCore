@@ -333,7 +333,9 @@ void mailstorage_disconnect(struct mailstorage * storage)
 
   r = mailsession_logout(storage->sto_session);
 
-  mailsession_free(storage->sto_session);
+    if (storage->sto_session != NULL)
+        mailsession_free(storage->sto_session);
+    
   storage->sto_session = NULL;
 }
 

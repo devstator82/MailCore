@@ -515,8 +515,10 @@ static struct mailstream_ssl_data * tls_data_new(int fd, void (* callback)(struc
 
 static void  ssl_data_free(struct mailstream_ssl_data * ssl_data)
 {
-  mailstream_cancel_free(ssl_data->cancel);
-  free(ssl_data);
+    if (ssl_data != NULL) {
+        mailstream_cancel_free(ssl_data->cancel);
+        free(ssl_data);
+    }
 }
 
 #ifndef USE_GNUTLS
