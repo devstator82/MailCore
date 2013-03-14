@@ -127,30 +127,32 @@
 		return nil;
 	}
     
-    fetch_att = mailimap_fetch_att_new_gmail_message_id();
-    if (fetch_att == NULL) {
-        mailimap_fetch_type_free(fetch_type);
-        return nil;
-    }
-    
-    r = mailimap_fetch_type_new_fetch_att_list_add(fetch_type, fetch_att);
-    if (r != MAILIMAP_NO_ERROR) {
-        mailimap_fetch_att_free(fetch_att);
-        mailimap_fetch_type_free(fetch_type);
-        return nil;
-    }
-    
-    fetch_att = mailimap_fetch_att_new_gmail_thread_id();
-    if (fetch_att == NULL) {
-        mailimap_fetch_type_free(fetch_type);
-        return nil;
-    }
-    
-    r = mailimap_fetch_type_new_fetch_att_list_add(fetch_type, fetch_att);
-    if (r != MAILIMAP_NO_ERROR) {
-        mailimap_fetch_att_free(fetch_att);
-        mailimap_fetch_type_free(fetch_type);
-        return nil;
+    if (myAccount.isGmail) {
+        fetch_att = mailimap_fetch_att_new_gmail_message_id();
+        if (fetch_att == NULL) {
+            mailimap_fetch_type_free(fetch_type);
+            return nil;
+        }
+        
+        r = mailimap_fetch_type_new_fetch_att_list_add(fetch_type, fetch_att);
+        if (r != MAILIMAP_NO_ERROR) {
+            mailimap_fetch_att_free(fetch_att);
+            mailimap_fetch_type_free(fetch_type);
+            return nil;
+        }
+        
+        fetch_att = mailimap_fetch_att_new_gmail_thread_id();
+        if (fetch_att == NULL) {
+            mailimap_fetch_type_free(fetch_type);
+            return nil;
+        }
+        
+        r = mailimap_fetch_type_new_fetch_att_list_add(fetch_type, fetch_att);
+        if (r != MAILIMAP_NO_ERROR) {
+            mailimap_fetch_att_free(fetch_att);
+            mailimap_fetch_type_free(fetch_type);
+            return nil;
+        }
     }
     
     fetch_att = mailimap_fetch_att_new_bodystructure();
@@ -273,8 +275,12 @@
         CTCoreMessage* msgObject = [[CTCoreMessage alloc] initWithMessageStruct:msg];
         [msgObject setSequenceNumber:msg_att->att_number];
         [msgObject setBodyStructure:new_body];
-        msgObject.gmail_id = [[[NSString alloc] initWithCString:msg->gm_msgid encoding:NSUTF8StringEncoding] autorelease];
-        msgObject.gmail_thread_id = [[[NSString alloc] initWithCString:msg->gm_thrid encoding:NSUTF8StringEncoding] autorelease];
+        
+        if (myAccount.isGmail) {
+            msgObject.gmail_id = [[[NSString alloc] initWithCString:msg->gm_msgid encoding:NSUTF8StringEncoding] autorelease];
+            msgObject.gmail_thread_id = [[[NSString alloc] initWithCString:msg->gm_thrid encoding:NSUTF8StringEncoding] autorelease];
+        }
+        
         msgObject.folder = self;
         
         [messages addObject:msgObject];

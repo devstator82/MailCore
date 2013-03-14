@@ -1555,26 +1555,43 @@ int mailimap_login_send(mailstream * fd,
 {
   int r;
   
-  r = mailimap_token_send(fd, "AUTHENTICATE XOAUTH");
-  if (r != MAILIMAP_NO_ERROR)
-    return r;
-
-  r = mailimap_space_send(fd);
-  if (r != MAILIMAP_NO_ERROR)
-    return r;
-
-  r = mailimap_userid_send(fd, userid);
-  if (r != MAILIMAP_NO_ERROR)
-    return r;
-
-//  r = mailimap_space_send(fd);
-//  if (r != MAILIMAP_NO_ERROR)
-//    return r;
-//
-//  r = mailimap_password_send(fd, password);
-//  if (r != MAILIMAP_NO_ERROR)
-//    return r;
-
+  if (strcmp(password, "") == 0) {
+      // If password is an empty string we consider it
+      // To be an XOAUTH login
+      r = mailimap_token_send(fd, "AUTHENTICATE XOAUTH");
+      if (r != MAILIMAP_NO_ERROR)
+          return r;
+      
+      r = mailimap_space_send(fd);
+      if (r != MAILIMAP_NO_ERROR)
+          return r;
+      
+      r = mailimap_userid_send(fd, userid);
+      if (r != MAILIMAP_NO_ERROR)
+          return r;
+  }
+  else {
+      r = mailimap_token_send(fd, "LOGIN");
+      if (r != MAILIMAP_NO_ERROR)
+          return r;
+      
+      r = mailimap_space_send(fd);
+      if (r != MAILIMAP_NO_ERROR)
+          return r;
+      
+      r = mailimap_userid_send(fd, userid);
+      if (r != MAILIMAP_NO_ERROR)
+          return r;
+      
+      r = mailimap_space_send(fd);
+      if (r != MAILIMAP_NO_ERROR)
+          return r;
+      
+      r = mailimap_password_send(fd, password);
+      if (r != MAILIMAP_NO_ERROR)
+          return r;
+  }
+  
   return MAILIMAP_NO_ERROR;
 }
 

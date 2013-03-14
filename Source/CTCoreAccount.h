@@ -50,6 +50,7 @@ typedef enum {
 @interface CTCoreAccount : NSObject {	
 	struct mailstorage	*myStorage;
 	BOOL				connected;
+    BOOL                isGmail;
 	CTCoreAccountType   accountType;
 }
 
@@ -121,5 +122,6 @@ typedef enum {
 - (struct mailstorage *)storageStruct;
 
 @property(nonatomic, assign) CTCoreAccountType accountType;
+@property(nonatomic, assign) BOOL isGmail;
 
 @end

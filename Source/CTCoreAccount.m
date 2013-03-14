@@ -39,7 +39,7 @@
 
 @implementation CTCoreAccount
 
-@synthesize accountType;
+@synthesize accountType, isGmail;
 
 - (id)init {
 	self = [super init];
@@ -74,7 +74,7 @@
 	const char* auth_type_to_pass = NULL;
     accountType = accType;
     
-
+    isGmail = [server rangeOfString:@"gmail"].location != NSNotFound;
 	
 	if (accType == CT_CORE_ACCOUNT_IMAP) {
 	    if(authType == IMAP_AUTH_TYPE_SASL_CRAM_MD5) {
@@ -269,7 +269,11 @@
 
 	//Now, fill the all folders array
 	//TODO Fix this so it doesn't use *
-	err = mailimap_xlist([self session], "", "*", &allList);		
+    if (isGmail)
+        err = mailimap_xlist([self session], "", "*", &allList);
+    else
+        err = mailimap_list([self session], "", "*", &allList);
+    
 	if (err != MAIL_NO_ERROR)
 	{
 		NSException *exception = [NSException
@@ -310,6 +314,9 @@
         
         // GMail doesn't allow selecting the localized inbox folder
 		mailboxNameObject = [flagName isEqualToString:@"Inbox"] ? @"INBOX" : [NSString stringWithCString:mailboxName encoding:NSUTF8StringEncoding];
+        
+        if ([mailboxNameObject isEqualToString:@"Inbox"])
+            flagName = @"Inbox";
 
         // Folders marked with /NoSelect have mbf_type 0, so ignore those (for ex. the root [GMail] virtual folder)
         if (mailboxFlagsStruct->mbf_type != 0)
