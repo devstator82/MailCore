@@ -3251,7 +3251,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
+				ARCHS = armv7;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
@@ -3269,6 +3269,7 @@
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "etpan-iphone";
 				SDKROOT = iphoneos;
+				VALID_ARCHS = "armv7 i386";
 			};
 			name = Debug;
 		};
@@ -3276,7 +3277,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
+				ARCHS = armv7;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
@@ -3293,6 +3294,7 @@
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "etpan-iphone";
 				SDKROOT = iphoneos;
+				VALID_ARCHS = "armv7 i386";
 				ZERO_LINK = NO;
 			};
 			name = Release;
